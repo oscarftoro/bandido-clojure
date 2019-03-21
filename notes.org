@@ -1,0 +1,44 @@
+* Implementation details
+
+*** ITE Operatora
+in both [0] and [a1] Bryant mentions the use of an ITE operator, which is the core
+of their bdd package. 
+
+* References
+
+@inproceedings{Brace:1991:EIB:123186.123222,
+ author = {Brace, Karl S. and Rudell, Richard L. and Bryant, Randal E.},
+ title = {Efficient Implementation of a BDD Package},
+ booktitle = {Proceedings of the 27th ACM/IEEE Design Automation Conference},
+ series = {DAC '90},
+ year = {1990},
+ isbn = {0-89791-363-9},
+ location = {Orlando, Florida, USA},
+ pages = {40--45},
+ numpages = {6},
+ url = {http://doi.acm.org/10.1145/123186.123222},
+ doi = {10.1145/123186.123222},
+ acmid = {123222},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+} 
+
+@Inbook{Bryant2018,
+author="Bryant, Randal E.",
+editor="Clarke, Edmund M.
+and Henzinger, Thomas A.
+and Veith, Helmut
+and Bloem, Roderick",
+title="Binary Decision Diagrams",
+bookTitle="Handbook of Model Checking",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="191--217",
+abstract="Binary decision diagrams provide a data structure for representing and manipulating Boolean functions in symbolic form. They have been especially effective as the algorithmic basis for symbolic model checkers. A binary decision diagram represents a Boolean function as a directed acyclic graph, corresponding to a compressed form of decision tree. Most commonly, an ordering constraint is imposed among the occurrences of decision variables in the graph, yielding ordered binary decision diagrams (OBDD). Representing all functions as OBDDs with a common variable ordering has the advantages that (1) there is a unique, reduced representation of any function, (2) there is a simple algorithm to reduce any OBDD to the unique form for that function, and (3) there is an associated set of algorithms to implement a wide variety of operations on Boolean functions represented as OBDDs. Recent work in this area has focused on generalizations to represent larger classes of functions, as well as on scaling implementations to handle larger and more complex problems.",
+isbn="978-3-319-10575-8",
+doi="10.1007/978-3-319-10575-8_7",
+url="https://doi.org/10.1007/978-3-319-10575-8_7"
+}
+citations
+https://github.com/tsdye/org-bib-template
