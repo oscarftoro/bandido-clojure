@@ -16,6 +16,9 @@
 ;; base fun(S/def :dk.nqn.bandido-clojure/uid (s/and int? #(> % 0)))ctions
 (defn const [b] b)
 
+;; ######################################################## 
+;; ###            PRIMITIVES ON 0 and 1                 ###
+;; ########################################################
 
 (defn- bdd-not [b]
   (case b
@@ -34,6 +37,9 @@
     0 0
     1 (bdd-or 0 c)))    
 
+;; ######################################################## 
+;; ###                BDDs FUNCTIONS                    ###
+;; ########################################################
 
 (defn ite [f g h]
   "Three argument operation that stands for If-then-else.
@@ -43,3 +49,24 @@
 (defn and* [f g]
   (ite f g 0))
 
+(defn or* [f g]
+  (ite f 1 g))
+
+(defn xor* [f g]
+  (ite f (bdd-not g) g))
+
+(defn nor* [f g]
+  (ite f 0 (bdd-not g)))
+
+(defn xnor* [f g]
+  (ite f g (bdd-not g)))
+
+(defn not* [f]
+  (ite f 0 1))
+
+(defn nand* [f g]
+  (ite f g 1))
+
+(defn zero* [] 0)
+
+(defn one* [] 1)
