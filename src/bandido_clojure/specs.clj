@@ -11,6 +11,6 @@
 
 (s/def :dk.nqn.bandido-clojure/ite (s/coll-of int? :kind vector? :count 3))
 
-(s/def :dk.nqn.bandido-clojure/t   (s/map-of int? :dk.nqn.bandido-clojure/node))
-(s/def :dk.nqn.bandido-clojure/h   (s/map-of :dk.nqn.bandido-clojure/node int?))
+(s/def :dk.nqn.bandido-clojure/t   (s/map-of int? :dk.nqn.bandido-clojure/ite))
+(s/def :dk.nqn.bandido-clojure/h   (s/map-of :dk.nqn.bandido-clojure/ite int?))
                                       
