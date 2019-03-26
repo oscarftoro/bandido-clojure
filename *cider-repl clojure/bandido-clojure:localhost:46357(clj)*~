@@ -1,0 +1,133 @@
+;; Connected to nREPL server - nrepl://localhost:46357
+;; CIDER 0.22.0snapshot (package: 20190221.2325), nREPL 0.6.0
+;; Clojure 1.10.0, Java 1.8.0_201
+;;     Docs: (doc function-name)
+;;           (find-doc part-of-name)
+;;   Source: (source function-name)
+;;  Javadoc: (javadoc java-object-or-class)
+;;     Exit: <C-c C-q>
+;;  Results: Stored in vars *1, *2, *3, an exception in *e;
+;; ======================================================================
+;; If you’re new to CIDER it is highly recommended to go through its
+;; manual first. Type <M-x cider-view-manual> to view it.
+;; In case you’re seeing any warnings you should consult the manual’s
+;; "Troubleshooting" section.
+;;
+;; Here are few tips to get you started:
+;;
+;; * Press <C-h m> to see a list of the keybindings available (this
+;;   will work in every Emacs buffer)
+;; * Press <,> to quickly invoke some REPL command
+;; * Press <C-c C-z> to switch between the REPL and a Clojure file
+;; * Press <M-.> to jump to the source of something (e.g. a var, a
+;;   Java method)
+;; * Press <C-c C-d C-d> to view the documentation for something (e.g.
+;;   a var, a Java method)
+;; * Enable ‘eldoc-mode’ to display function & method signatures in the minibuffer.
+;; * Print CIDER’s refcard and keep it close to your keyboard.
+;;
+;; CIDER is super customizable - try <M-x customize-group cider> to
+;; get a feel for this. If you’re thirsty for knowledge you should try
+;; <M-x cider-drink-a-sip>.
+;;
+;; If you think you’ve encountered a bug (or have some suggestions for
+;; improvements) use <M-x cider-report-bug> to report it.
+;;
+;; Above all else - don’t panic! In case of an emergency - procure
+;; some (hard) cider and enjoy it responsibly!
+;;
+;; You can remove this message with the <M-x cider-repl-clear-help-banner> command.
+;; You can disable it from appearing on start by setting
+;; ‘cider-repl-display-help-banner’ to nil.
+;; ======================================================================
+bandido-clojure.core> (and* true false)
+Execution error (ClassCastException) at bandido-clojure.core/and* (core.clj:25).
+java.lang.Boolean cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (and false true)
+false
+bandido-clojure.core> (and 1 0)
+0
+bandido-clojure.core> (and 1 1)
+1
+bandido-clojure.core> (and 1 6)
+6
+bandido-clojure.core> (and* 0 0)
+Execution error (ClassCastException) at bandido-clojure.core/and* (core.clj:25).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (and* 0 0)
+Execution error (ClassCastException) at bandido-clojure.core/and* (core.clj:25).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (and* 0 0)
+Execution error (ClassCastException) at bandido-clojure.core/and* (core.clj:25).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (not 0)
+false
+bandido-clojure.core> (not 1)
+false
+bandido-clojure.core> (and* 0 0)
+Execution error (ClassCastException) at bandido-clojure.core/and* (core.clj:30).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (and 0 1)
+1
+bandido-clojure.core> (or 0 0)
+0
+bandido-clojure.core> (or 0 1)
+0
+bandido-clojure.core> (and* 0 0)
+Execution error (ClassCastException) at bandido-clojure.core/and* (core.clj:30).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (and* 0 0)
+0
+bandido-clojure.core> (and* 0 1)
+1
+bandido-clojure.core> (bdd-not 0)
+1
+bandido-clojure.core> (bdd-not 1)
+0
+bandido-clojure.core> (and* 0 1)
+1
+bandido-clojure.core> (and 0 1)
+1
+bandido-clojure.core> (and 0 1)
+1Syntax error macroexpanding case at (core.clj:26:3).
+Duplicate case test constant: 1
+
+bandido-clojure.core> (bdd-and 0 0)
+0
+bandido-clojure.core> (bdd-and 0 1)
+0
+bandido-clojure.core> (bdd-and 1 1)
+1
+bandido-clojure.core> (bdd-not 1)
+0
+bandido-clojure.core> (bdd-not 9)
+Execution error (IllegalArgumentException) at bandido-clojure.core/bdd-not (core.clj:21).
+No matching clause: 9
+Syntax error macroexpanding case at (core.clj:35:3).
+Duplicate case test constant: 0
+bandido-clojure.core> (bdd-not 0)
+1
+bandido-clojure.core> (bdd-not 1)
+0
+bandido-clojure.core> (bdd-or 1 0)
+
+1
+bandido-clojure.core> (bdd-or 1 1)
+
+1
+bandido-clojure.core> (bdd-or 0 0)
+
+0
+bandido-clojure.core> (bdd-and 0 1)
+
+0
+bandido-clojure.core> (bdd-and 1 1)
+
+1
+bandido-clojure.core> (bdd-and 1 0)
+
+0
+bandido-clojure.core> (bdd-and 0 0)
+
+0
+bandido-clojure.core> 

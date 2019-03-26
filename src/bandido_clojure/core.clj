@@ -1,24 +1,13 @@
 (ns bandido-clojure.core
-  (:require [clojure.spec.alpha :as s]))
-
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+  (:require [clojure.set        :as set]
+            [bandido-clojure.specs :as s]))
 
 
-;;specs
-(s/def :dk.nqn.bandido-clojure/b #{0 1})
-(s/def :dk.nqn.bandido-clojure/uid (s/and int? #(> % 0)))
-(s/def :dk.nqn.bandido-clojure/var (s/and int? #(> % 0)))
-;(s/def :dk.nqn.bandido-clojure/ite
- ; (s/keys :req-un []))
-;; base fun(S/def :dk.nqn.bandido-clojure/uid (s/and int? #(> % 0)))ctions
 (defn const [b] b)
 
-;; ######################################################## 
-;; ###            PRIMITIVES ON 0 and 1                 ###
-;; ########################################################
+;;; ######################################################## 
+;;; ###            PRIMITIVES ON 0 and 1                 ###
+;;; ########################################################
 
 (defn- bdd-not [b]
   (case b
@@ -37,10 +26,11 @@
     0 0
     1 (bdd-or 0 c)))    
 
-;; ######################################################## 
-;; ###                BDDs FUNCTIONS                    ###
-;; ########################################################
+;;; ######################################################## 
+;;; ###                BDDs FUNCTIONS                    ###
+;;; ########################################################
 
+;;; naive implementation of ite
 (defn ite [f g h]
   "Three argument operation that stands for If-then-else.
    When f is true returns g otherwise h"
@@ -70,3 +60,20 @@
 (defn zero* [] 0)
 
 (defn one* [] 1)
+
+(defrecord Bdd [t prev-u ])
+(defrecord PartialResult [t prev-u u])
+
+(defn mk [[i l h] partial-result]
+  (if (= l h)
+    partial-result
+    (let [ht (set/map-invert (:t partial-result))]
+      (if (contains? ht [i l h])
+        ([i  l h] ht)
+        (let [:u  (inc (:prev-u partial-result))
+              :t1 (conj t [:u [i l h]])]
+          (map->PartialResult
+           {:t      t1
+            :prev-u u}))))))
+
+
