@@ -1,8 +1,11 @@
 * Implementation details
 
+*** Notation
+The node is denoted by the tuple (v,G,H) where v is a variable and G and H other nodes
+
 *** ITE Operatora
 in both [0] and [a1] Bryant mentions the use of an ITE operator, which is the core
-of their bdd package. 
+of their bdd package. F is the low branch (then) and G is the else branch F.
 
 * References
 
@@ -42,3 +45,18 @@ url="https://doi.org/10.1007/978-3-319-10575-8_7"
 }
 citations
 https://github.com/tsdye/org-bib-template
+* Challenges
+  An interesting challenge of the specification is the use of a hash table to represents the 
+directed graph. There are two tables t and h where t is of the form u -> [i h l]  and table h 
+is its inverse: [i h l] -> u. This situation constitutes a problem for table h, let us take as 
+an example a BDD where the last variable is X_5, or its higher variable is 5. The two first values 
+of table t are 0 -> [5 - -] and 1 -> [5 - -] when flipping the values we end up with two keys 
+[5 - -], and because keys are unique in maps, one of them is dropped. We need to make them unique.
+  In F# and in the typed languages that support union type we can model the case using two 
+different type constructors. But how can we model this in Clojure and the rest of untyped languages? 
+
+** Solution 1   
+  Can we specify a convention for the two values being: 0 -> [5 0 0] 1 -> [5 1 1]?
+  Notice that mk algorithm eliminates redundant entries where l and h point to the same node.
+  I think this should work if we say take the value [i 0 0] from h where i is the larger number 
+representing a variable. 
