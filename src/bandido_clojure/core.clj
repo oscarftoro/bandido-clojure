@@ -69,15 +69,16 @@
 (defrecord PartialResult [t prev-u u])
 
 (defn init-table [var-num]
-  "Initialise a record representing a node containing a table u -> [ i l h].
+  "Initialise a record representing a node containing a table(map) u -> [ i l h].
    It returns a PartialResult record where:
-   ':t' is the unique table that represent a single, multirooted graph.
-   ':prev-u' is the largest number representing the last variable of the bdd.
-   ':u' is the current result which is nil at the begining.
-. 
+   `:t` is the unique table that represent a single, multirooted graph.
+   `:prev-u` is the largest number representing the last variable of the bdd.
+   `:u` is the current result which is nil at the begining.
+ 
    The algorithms are axpecting to return different values of :u but since this is 
-   is for the initialisation phase, the value of :u is nil "
-  )
+   is for the initialisation phase, the value of :u is nil"
+  (map->PartialResult {:t {0  [var-num 0 0] 1 [var-num 1 1]}
+                       :prev-u 1}))
 
 (defn mk1 [[i l h] partial-result]
   (if (= l h)
