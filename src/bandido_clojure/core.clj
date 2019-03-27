@@ -61,17 +61,32 @@
 
 (defn one* [] 1)
 
+
+;;; we use records instead of maps because we forsee the use
+;;; of hudreds of thousands of nodes
+
 (defrecord Bdd [t prev-u ])
 (defrecord PartialResult [t prev-u u])
 
-(defn mk [[i l h] partial-result]
+(defn init-table [var-num]
+  "Initialise a record representing a node containing a table u -> [ i l h].
+   It returns a PartialResult record where:
+   ':t' is the unique table that represent a single, multirooted graph.
+   ':prev-u' is the largest number representing the last variable of the bdd.
+   ':u' is the current result which is nil at the begining.
+. 
+   The algorithms are axpecting to return different values of :u but since this is 
+   is for the initialisation phase, the value of :u is nil "
+  )
+
+(defn mk1 [[i l h] partial-result]
   (if (= l h)
     partial-result
     (let [ht (set/map-invert (:t partial-result))]
       (if (contains? ht [i l h])
         ([i  l h] ht)
-        (let [:u  (inc (:prev-u partial-result))
-              :t1 (conj t [:u [i l h]])]
+        (let [u  (inc (:prev-u partial-result))
+              t1 (conj partial-result.t [:u [i l h]])]
           (map->PartialResult
            {:t      t1
             :prev-u u}))))))
