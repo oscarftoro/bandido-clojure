@@ -90,9 +90,9 @@
     pr
     (let [ht (partial-result->ht pr)]
       (if (contains? ht [i l h])
-        (assoc :u ([i  l h] ht) pr) ; a partial-result 
+        (assoc :u ([i l h] ht) pr) ; a partial-result 
         (let [u  (inc (:max-u pr))
-              t1 (conj partial-result.t [:u [i l h]])]
+              t1 (conj (:t pr) [u [i l h]])]
           (map->PartialResult
            {:t      t1
             :max-u u}))))))
