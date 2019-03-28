@@ -60,3 +60,7 @@ different type constructors. But how can we model this in Clojure and the rest o
   Notice that mk algorithm eliminates redundant entries where l and h point to the same node.
   I think this should work if we say take the value [i 0 0] from h where i is the larger number 
 representing a variable. 
+
+* Cider
+**  how to evaluate a function from the file?
+ C-x C-e at the end of the function definition
