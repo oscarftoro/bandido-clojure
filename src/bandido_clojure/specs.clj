@@ -16,3 +16,9 @@
                                       
 (s/fdef :dk.nqn.bandido-clojure/->Bdd
   :args (s/cat :dk.nqn.bandido-clojure/t :dk.nqn.bandido-clojure/uid))
+
+(s/fdef :dk.nqn.bandido-clojure/->PartialResult
+  (s/keys :req-un[:dk.nqn.bandido-clojure/t
+                  :dk.nqn.bandido-clojure/uid
+                  :dk.nqn.bandido-clojure/uid]))
+
