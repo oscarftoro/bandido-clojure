@@ -80,12 +80,24 @@
   (map->PartialResult {:t {0  [var-num 0 0] 1 [var-num 1 1]}
                        :max-u 1}))
 
+(defn init-table2 [var-num]
+  "Initialise a table that works with maps instead of records"
+  {:t {0 [var-num 0 0] 1 [var-num 1 1]}
+   :max-u 1
+   :u nil})
+
 (defn partial-result->ht [pr]
   "Takes a partial result and returns a map h which is the inverse of t"
   (clojure.set/map-invert (:t pr)))
 
+(defn map->ht [m]
+  "Takes a map and returns a map h; the inverse of t"
+  (clojure.set/map-invert (:t m)))
 
 (defn mk1 [[i l h] pr]
+  "The core of building reduced BDDs.
+   Make a new entry representing a node in table t.
+   A partial result is returned" 
   (if (= l h)
     pr
     (let [ht (partial-result->ht pr)]
@@ -98,3 +110,16 @@
             :max-u u}))))))
 
 
+(defn mk2 [[i l h] m]
+   "The core of building reduced BDDs.
+   Make a  new entry representing a node in table t.
+   A map result is returned" 
+   (if (= l h)
+     m
+     (let [ht (map->ht m)]
+       (if (contains? ht [i l h])
+         (assoc :u ([i l h] ht) m) ; an updated map
+         (let [u  (inc (:max-u m))
+               t1 (conj (:t m) [u [i l h]])]
+            {:t      t1
+             :max-u u})))))
