@@ -1,6 +1,7 @@
 (ns bandido-clojure.core
   (:require [clojure.set        :as set]
-            [bandido-clojure.specs :as s]))
+            [bandido-clojure.specs]
+            [clojure.spec.alpha :as s]))
 
 
 (defn const [b] b)
@@ -62,14 +63,12 @@
 (defn one* [] 1)
 
 
-;;; we use records instead of maps because we forsee the use
-;;; of hudreds of thousands of nodes
 
 (defrecord Bdd [t max-u ])
 (defrecord PartialResult [t max-u u])
 
 (defn init-table [var-num]
-  "Initialise a record representing a node containing a table(map) u -> [ i l h].
+    "Initialise a record representing a node containing a table(map) u -> [ i l h].
    It returns a PartialResult record where:
    `:t` is the unique table that represent a single, multirooted graph.
    `:max-u` is the largest number representing the last variable of the bdd.
@@ -77,6 +76,8 @@
  
    The algorithms are axpecting to return different values of :u but since this is 
    is for the initialisation phase, the value of :u is nil"
+  
+  {:pre  [(s/valid? :bandido-clojure.specs/vid var-num)]}
   (map->PartialResult {:t {0  [var-num 0 0] 1 [var-num 1 1]}
                        :max-u 1}))
 
@@ -88,6 +89,7 @@
 
 (defn partial-result->ht [pr]
   "Takes a partial result and returns a map h which is the inverse of t"
+  {:pre  [(s/valid? :bandido-clojure.spec/partial-result)]}
   (clojure.set/map-invert (:t pr)))
 
 (defn map->ht [m]

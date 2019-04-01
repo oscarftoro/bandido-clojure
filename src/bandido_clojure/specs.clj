@@ -3,27 +3,31 @@
 
 
 
-(s/def :dk.nqn.bandido-clojure/b   #{0 1})                                      ; boolean value
-(s/def :dk.nqn.bandido-clojure/uid (s/and int? #(> % 0)))                       ; unique id
-(s/def :dk.nqn.bandido-clojure/vid :dk.nqn.bandido-clojure/uid)                 ; variable id
-(s/def :dk.nqn.bandido-clojure/low :dk.nqn.bandido-clojure/uid)
-(s/def :dk.nqn.bandido-clojure/hgh :dk.nqn.bandido-clojure/uid)
+(s/def ::b   #{0 1})                                      ; boolean value
+(s/def ::uid (s/and int? #(> % 0)))                       ; unique id
+(s/def ::vid (s/and int? #(>= % 1)))                      ; variable id is 1 or bigger (eq to ::uid)
+(s/def ::low ::uid)
+(s/def ::hgh ::uid)
 
-(s/def :dk.nqn.bandido-clojure/ite (s/coll-of int? :kind vector? :count 3))
 
-(s/def :dk.nqn.bandido-clojure/t   (s/map-of int? :dk.nqn.bandido-clojure/ite)) ; tables
-(s/def :dk.nqn.bandido-clojure/h   (s/map-of :dk.nqn.bandido-clojure/ite int?)) ; 
-                                      
-(s/fdef :dk.nqn.bandido-clojure/->Bdd
-  :args (s/cat :dk.nqn.bandido-clojure/t :dk.nqn.bandido-clojure/uid))
+(s/def ::ite (s/coll-of int? :kind vector? :count 3))
 
-(s/def :dk.nqn.bandido-clojure/partial-result (s/keys :req-un [:dk.nqn.bandido-clojure/t
-                                                               :dk.nqn.bandido-clojure/uid
-                                                               :dk.nqn.bandido-clojure/uid]))
+(s/def ::t   (s/map-of int? ::ite)) ; tables
+(s/def ::h   (s/map-of ::ite int?)) 
 
-(s/fdef :dk.nqn.bandido-clojure/->PartialResult
-  :args (s/cat :t     :dk.nqn.bandido-clojure/t 
-               :max-u :dk.nqn.bandido-clojure/uid 
-               :u     :dk.nqn.bandido-clojure/uid)
-  :ret :dk.nqn.bandido-clojure/partial-result)
+(s/fdef ::->Bdd
+  :args (s/cat ::t ::uid))
 
+(s/def ::partial-result (s/keys :req-un [::t
+                                         ::uid
+                                         ::uid]))
+
+(s/fdef ::->PartialResult
+  :args (s/cat :t     ::t 
+               :max-u ::uid 
+               :u     ::uid)
+  :ret  ::partial-result)
+
+(s/fdef ::partial-result->ht
+  :args (:pr ::partial-result)
+  :ret (s/coll-of ::h :kind map? :count? 3 ))
