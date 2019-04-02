@@ -22,6 +22,14 @@
                                          ::uid
                                          ::uid]))
 
+(s/def ::init-t (s/coll-of ::h :kind map? :count? 3 ))
+
+
+
+(s/fdef ::init-table
+  :args (:var-num ::vid)
+  :ret ::partial-result)
+
 (s/fdef ::->PartialResult
   :args (s/cat :t     ::t 
                :max-u ::uid 
@@ -30,4 +38,4 @@
 
 (s/fdef ::partial-result->ht
   :args (:pr ::partial-result)
-  :ret (s/coll-of ::h :kind map? :count? 3 ))
+  :ret ::h )

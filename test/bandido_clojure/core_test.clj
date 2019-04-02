@@ -5,7 +5,8 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]
             [bandido-clojure.core :refer [init-table]]
-            [bandido-clojure.specs :as specs]))
+            [bandido-clojure.specs :as specs]
+            [clojure.spec.test.alpha :as stest]))
 
 (deftest init-table-test
   (testing "init-table should return a partial result with a table t with two elements")
