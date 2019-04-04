@@ -101,7 +101,7 @@
 
 (defn mk1 [[i l h] pr]
   "The core of building reduced BDDs.
-|   Make a new entry representing a node in table t.
+   Make a new entry representing a node in table t.
    A partial result is returned" 
   (if (= l h)
     pr
