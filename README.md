@@ -1,6 +1,6 @@
 # bandido-clojure
 
-A library that implements Binary decision diagrams for Clojure.
+A library that implements Binary Decision Diagrams for Clojure.
 
 ## Usage
 do not use yet
