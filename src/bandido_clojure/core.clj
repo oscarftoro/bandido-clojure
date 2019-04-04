@@ -1,6 +1,6 @@
 (ns bandido-clojure.core
   (:require [clojure.set        :as set]
-            [bandido-clojure.specs]
+            [bandido-clojure.specs :as bspec]
             [clojure.spec.alpha :as s]))
 
 
@@ -13,7 +13,10 @@
 (defn- bdd-not [b]
   (case b
     1 0
-    0 1))
+    0 1))(s/def ::partial-result (s/keys :req-un [::t
+                                         ::uid
+                                         ::uid]))
+
 
 (defn- bdd-or [b c]
   (case b
@@ -68,7 +71,7 @@
 (defrecord PartialResult [t max-u u])
 
 (defn init-table [var-num]
-    "Initialise a record representing a node containing a table(map) u -> [ i l h].
+   "Initialise a record representing a node containing a table(map) u -> [ i l h].
    It returns a PartialResult record where:
    `:t` is the unique table that represent a single, multirooted graph.
    `:max-u` is the largest number representing the last variable of the bdd.
@@ -77,7 +80,7 @@
    The algorithms are axpecting to return different values of :u but since this is 
    is for the initialisation phase, the value of :u is nil"
   
-  {:pre  [(s/valid? :bandido-clojure.specs/vid var-num)]}
+  {:pre  [(s/valid? ::bspec/vid var-num)]}
   (map->PartialResult {:t {0  [var-num 0 0] 1 [var-num 1 1]}
                        :max-u 1}))
 
@@ -89,7 +92,7 @@
 
 (defn partial-result->ht [pr]
   "Takes a partial result and returns a map h which is the inverse of t"
-  {:pre  [(s/valid? :bandido-clojure.spec/partial-result)]}
+  {:pre  [(s/valid? ::bspec/partial-result)]}
   (clojure.set/map-invert (:t pr)))
 
 (defn map->ht [m]
@@ -98,7 +101,7 @@
 
 (defn mk1 [[i l h] pr]
   "The core of building reduced BDDs.
-   Make a new entry representing a node in table t.
+|   Make a new entry representing a node in table t.
    A partial result is returned" 
   (if (= l h)
     pr
