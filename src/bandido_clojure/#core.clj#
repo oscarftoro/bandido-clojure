@@ -17,7 +17,6 @@
                                                   ::uid
                                                   ::uid]))
 
-
 (defn- bdd-or [b c]
   (case b
     1 1
@@ -132,8 +131,9 @@
 ;; store var-num this will require a init-table3 that uses with-meta 
 
 (defn- app [op u1 u2 pr g]
-  
-  )
+  (when-let))
+
+;; u1 and u2 are numbers from 0 to var-num
 (defn apply [op u1 u2 pr]
-  let [g {}]
+  let [g {}] ; g (u1,u2) -> u3
   ((app op u1 u2 pr g)))
