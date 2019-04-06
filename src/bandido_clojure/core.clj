@@ -37,7 +37,8 @@
 ;;; naive implementation of ite
 (defn ite [f g h]
   "Three argument operation that stands for If-then-else.
-   When f is true returns g otherwise h"
+   When f is true returns g otherwise h.
+   f is true if f and g is true and false when f is false and h is true"
   (bdd-or (bdd-and f g) (bdd-and (bdd-not f) h)))
 
 (defn and* [f g]
@@ -80,14 +81,22 @@
    is for the initialisation phase, the value of :u is nil"
   
   {:pre [(s/valid? ::bspec/vid var-num)]}
-  (map->PartialResult {:t     {0 [var-num 0 0] 1 [var-num 1 1]}
+  (map->PartialResult {:t     {0 [(inc var-num) 0 0] 1 [(inc var-num) 1 1]}
                        :max-u 1}))
+
 
 (defn init-table2 [var-num]
   "Initialise a table that works with maps instead of records"
   {:t     {0 [var-num 0 0] 1 [var-num 1 1]}
    :max-u 1
    :u     nil})
+
+;; helper functions to extract values of ite vectors
+;; given a ite vector and a t table, returns the corresponding value
+
+(defn v    [u t] (-> (t u) (first))
+(defn low  [u t] (-> (t u) (second))
+(defn high [u t] (-> (t u) (nth 2))
 
 (defn partial-result->ht [pr]
   "Takes a partial result and returns a map h which is the inverse of t"
@@ -131,9 +140,17 @@
 ;; a mk3 could be imnplemented using the map metadata of the object to
 ;; store var-num this will require a init-table3 that uses with-meta 
 
+
+(defn- eval-op
+  [op u1 u2]
+   (case op
+     :and (and* u1 u2)
+     :or  (or* u1 u2)))
+     
+
 (defn- app [op u1 u2 pr g]
-  
-  )
+  (cond
+    (g (u1,u2)) ))
 (defn apply [op u1 u2 pr]
-  let [g {}]
-  ((app op u1 u2 pr g)))
+  (let [g {}]
+    (app op u1 u2 pr g)))
