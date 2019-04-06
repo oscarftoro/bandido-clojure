@@ -21,13 +21,15 @@
    l is a unique id of type u (for unique-id) called low and
    h is a unique id of type u called high.
    When initialising the table, the values of 0 and 1 are equal to the maximal expected value 
-   of i"
+   of i. The constant are asssigned an index which is the number of variables in the ordering
+   plus one according to Andersen [1].(pg 15) "
   (-> pr 
       (:t)
       (as-> ite 
-          (let [[z _ _] (get ite 0)
-                [o _ _] (get ite 1)]
-            (and (= z o) (= var-num z))))))
+          (let [[z _ _]  (get ite 0)
+                [o _ _]  (get ite 1)
+                expected (inc var-num)]
+            (and (= z o) (= expected z))))))
 
 (s/def ::partial-result (s/keys :req-un [::t
                                          ::uid
