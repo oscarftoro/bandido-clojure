@@ -3,7 +3,7 @@
 A library that implements Binary Decision Diagrams for Clojure.
 
 ## Usage
-do not use yet
+do not use yet. Developed using Lein 2.8.3
 
 
 ## License
