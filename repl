@@ -1,0 +1,748 @@
+;; Connected to nREPL server - nrepl://localhost:60646
+;; CIDER 0.22.0snapshot (package: 20190302.114), nREPL 0.6.0
+;; Clojure 1.10.0, Java 1.8.0_202
+;;     Docs: (doc function-name)
+;;           (find-doc part-of-name)
+;;   Source: (source function-name)
+;;  Javadoc: (javadoc java-object-or-class)
+;;     Exit: <C-c C-q>
+;;  Results: Stored in vars *1, *2, *3, an exception in *e;
+;; ======================================================================
+;; If you’re new to CIDER it is highly recommended to go through its
+;; manual first. Type <M-x cider-view-manual> to view it.
+;; In case you’re seeing any warnings you should consult the manual’s
+;; "Troubleshooting" section.
+;;
+;; Here are few tips to get you started:
+;;
+;; * Press <C-h m> to see a list of the keybindings available (this
+;;   will work in every Emacs buffer)
+;; * Press <,> to quickly invoke some REPL command
+;; * Press <C-c C-z> to switch between the REPL and a Clojure file
+;; * Press <M-.> to jump to the source of something (e.g. a var, a
+;;   Java method)
+;; * Press <C-c C-d C-d> to view the documentation for something (e.g.
+;;   a var, a Java method)
+;; * Enable ‘eldoc-mode’ to display function & method signatures in the minibuffer.
+;; * Print CIDER’s refcard and keep it close to your keyboard.
+;;
+;; CIDER is super customizable - try <M-x customize-group cider> to
+;; get a feel for this. If you’re thirsty for knowledge you should try
+;; <M-x cider-drink-a-sip>.
+;;
+;; If you think you’ve encountered a bug (or have some suggestions for
+;; improvements) use <M-x cider-report-bug> to report it.
+;;
+;; Above all else - don’t panic! In case of an emergency - procure
+;; some (hard) cider and enjoy it responsibly!
+;;
+;; You can remove this message with the <M-x cider-repl-clear-help-banner> command.
+;; You can disable it from appearing on start by setting
+;; ‘cider-repl-display-help-banner’ to nil.
+;; ======================================================================
+bandido-clojure.core> (let m1 )
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:43:23).
+m1 - failed: vector? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:1:1).
+prefix cannot be nil
+Syntax error compiling at (core.clj:42:11).
+Unable to resolve symbol: bdd-aend in this context
+Syntax error compiling at (core.clj:44:1).
+Unable to resolve symbol: xs in this context
+WARNING: apply already refers to: #'clojure.core/apply in namespace: bandido-clojure.core, being replaced by: #'bandido-clojure.core/apply
+bandido-clojure.core> 
+bandido-clojure.core> (let [t1 init-table] t1)
+#function[bandido-clojure.core/init-table]
+bandido-clojure.core> (let [t1 init-table 4] t1)
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:56:23).
+[t1 init-table 4] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
+bandido-clojure.core> (let [t1 (init-table 4)] t1)
+{:t {0 [5 0 0], 1 [5 1 1]}, :max-u 1, :u nil}
+bandido-clojure.core> (let [pr (init-table 4)] 
+                        (-> pr
+                            (:t)))
+{0 [5 0 0], 1 [5 1 1]}
+bandido-clojure.core> (let [pr (init-table 4)] 
+                        (-> pr
+                            (:t)))
+{0 [5 0 0], 1 [5 1 1]}
+bandido-clojure.core> (let [pr (init-table 4)] 
+                        (-> pr
+                            (:t)))
+{0 [5 0 0], 1 [5 1 1]}
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (assoc {2 [3 0 1]})))
+Execution error (ArityException) at bandido-clojure.core/eval6166 (form-init7413964668609836877.clj:76).
+Wrong number of args (2) passed to: clojure.core/assoc--5401
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (assoc {2 [3 0 1]}) ))
+Execution error (ArityException) at bandido-clojure.core/eval6168 (form-init7413964668609836877.clj:82).
+Wrong number of args (2) passed to: clojure.core/assoc--5401
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> assoc {2 [3 0 1]}) ))
+{2 [3 0 1]}
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m assoc m 2 [3 0 1]) ))
+[3 0 1]
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m 
+                                (assoc m 2 [3 0 1]))))
+{0 [4 0 0], 1 [4 1 1], 2 [3 0 1]}
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m 
+                                (assoc m 2 [3 0 1])
+                                (assoc m 3 [2 1 0])
+                                (assoc m 4 [2 0 1])
+                                (assoc m 5 [1 0 2])
+                                (assoc m 6 [1 3 4]))))
+{0 [4 0 0],
+ 1 [4 1 1],
+ 2 [3 0 1],
+ 3 [2 1 0],
+ 4 [2 0 1],
+ 5 [1 0 2],
+ 6 [1 3 4]}
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> 
+                                (assoc m 2 [3 0 1])
+                                (assoc m 3 [2 1 0])
+                              (assoc m 4 [2 0 1])
+                              (assoc m 5 [1 0 2])
+                              (assoc m 6 [1 3 4]))
+                            ))
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:120:29).
+(assoc m 2 [3 0 1]) - failed: simple-symbol? at: [:bindings :form :local-symbol] spec: :clojure.core.specs.alpha/local-name
+(assoc m 2 [3 0 1]) - failed: vector? at: [:bindings :form :seq-destructure] spec: :clojure.core.specs.alpha/seq-binding-form
+(assoc m 2 [3 0 1]) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-bindings
+(assoc m 2 [3 0 1]) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-special-binding
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> 
+                                (assoc m 2 [3 0 1])
+                                (assoc m 3 [2 1 0])
+                              (assoc m 4 [2 0 1])
+                              (assoc m 5 [1 0 2])
+                              (assoc m 6 [1 3 4]))))
+                            
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:135:29).
+(assoc m 2 [3 0 1]) - failed: simple-symbol? at: [:bindings :form :local-symbol] spec: :clojure.core.specs.alpha/local-name
+(assoc m 2 [3 0 1]) - failed: vector? at: [:bindings :form :seq-destructure] spec: :clojure.core.specs.alpha/seq-binding-form
+(assoc m 2 [3 0 1]) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-bindings
+(assoc m 2 [3 0 1]) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-special-binding
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> 
+                                (assoc m 2 [3 0 1]) (assoc m 3 [2 1 0])
+                              (assoc m 4 [2 0 1])
+                              (assoc m 5 [1 0 2])
+                              (assoc m 6 [1 3 4]))))
+                            
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:150:29).
+(assoc m 2 [3 0 1]) - failed: simple-symbol? at: [:bindings :form :local-symbol] spec: :clojure.core.specs.alpha/local-name
+(assoc m 2 [3 0 1]) - failed: vector? at: [:bindings :form :seq-destructure] spec: :clojure.core.specs.alpha/seq-binding-form
+(assoc m 2 [3 0 1]) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-bindings
+(assoc m 2 [3 0 1]) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-special-binding
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m 
+                                (assoc m 2 [3 0 1]) (assoc m 3 [2 1 0])
+                              (assoc m 4 [2 0 1])
+                              (assoc m 5 [1 0 2])
+                              (assoc m 6 [1 3 4]))))
+                            
+{0 [4 0 0],
+ 1 [4 1 1],
+ 2 [3 0 1],
+ 3 [2 1 0],
+ 4 [2 0 1],
+ 5 [1 0 2],
+ 6 [1 3 4]}
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m 
+                                (assoc m 2 [3 0 1]) (assoc m 3 [2 1 0])
+                                (assoc m 4 [2 0 1])
+                                (assoc m 5 [1 0 2])
+                                (assoc m 6 [1 3 4]))
+                            ()))
+Syntax error (IllegalArgumentException) compiling at (bandido-clojure:localhost:60646(clj)*:178:25).
+Can't call nil, form: (nil (as-> (:t pr) m (assoc m 2 [3 0 1]) (assoc m 3 [2 1 0]) (assoc m 4 [2 0 1]) (assoc m 5 [1 0 2]) (assoc m 6 [1 3 4])))
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m 
+                                (assoc m 2 [3 0 1]) (assoc m 3 [2 1 0])
+                                (assoc m 4 [2 0 1])
+                                (assoc m 5 [1 0 2])
+                                (assoc m 6 [1 3 4]))))
+{0 [4 0 0],
+ 1 [4 1 1],
+ 2 [3 0 1],
+ 3 [2 1 0],
+ 4 [2 0 1],
+ 5 [1 0 2],
+ 6 [1 3 4]}Syntax error macroexpanding case at (core.clj:140:4).
+Duplicate case test constant: u1
+Syntax error macroexpanding case at (core.clj:140:4).
+Duplicate case test constant: u1
+
+bandido-clojure.core> (let [pr (init-table 3)] 
+                        (-> pr
+                            (:t)
+                            (as-> m 
+                                (assoc m 2 [3 0 1]) (assoc m 3 [2 1 0])
+                                (assoc m 4 [2 0 1])
+                                (assoc m 5 [1 0 2])
+                                (assoc m 6 [1 3 4]))))
+{0 [4 0 0],
+ 1 [4 1 1],
+ 2 [3 0 1],
+ 3 [2 1 0],
+ 4 [2 0 1],
+ 5 [1 0 2],
+ 6 [1 3 4]}
+bandido-clojure.core> (cond )
+nil
+bandido-clojure.core> (-> {(2,3) 6} cond 
+                        ({(2,3) 6} (2,3)) "salud")
+Syntax error macroexpanding cond at (bandido-clojure:localhost:60646(clj)*:225:25).
+cond requires an even number of forms
+bandido-clojure.core> (-> {(2,3) 6} cond 
+                          (2,3)) "salud")
+Syntax error macroexpanding cond at (bandido-clojure:localhost:60646(clj)*:229:27).
+cond requires an even number of forms
+"salud"Syntax error reading source at (REPL:229:42).
+Unmatched delimiter: )
+bandido-clojure.core> (-> {(2,3) 6} cond 
+(2,3)) "salud"
+Syntax error macroexpanding cond at (bandido-clojure:localhost:60646(clj)*:235:1).
+cond requires an even number of forms
+"salud"
+bandido-clojure.core> (-> {(2,3) 6}
+(cond
+(2,3) "salud"))
+Syntax error macroexpanding clojure.core/cond at (bandido-clojure:localhost:60646(clj)*:239:23).
+cond requires an even number of forms
+bandido-clojure.core> ({(2,3) 6} (2,3))
+Execution error (ClassCastException) at bandido-clojure.core/eval7529 (form-init7413964668609836877.clj:244).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> ((2,3) {(2,3) 6})
+Execution error (ClassCastException) at bandido-clojure.core/eval7531 (form-init7413964668609836877.clj:247).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> ( {(2,3) 6})
+Execution error (ClassCastException) at bandido-clojure.core/eval7533 (form-init7413964668609836877.clj:250).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> {(2,3) 6}
+Execution error (ClassCastException) at bandido-clojure.core/eval7535 (form-init7413964668609836877.clj:253).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [x {(2,3) 6}}] x)
+Syntax error reading source at (REPL:256:41).
+Unmatched delimiter: }
+bandido-clojure.core> (let [x {(2,3) 6}] x)
+Execution error (ClassCastException) at bandido-clojure.core/eval7537 (form-init7413964668609836877.clj:259).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [x {:a 6}] x)
+{:a 6}
+bandido-clojure.core> (let [x {(2 3) 6}] x)
+Execution error (ClassCastException) at bandido-clojure.core/eval7541 (form-init7413964668609836877.clj:264).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [x {[2 3] 6}] x)
+{[2 3] 6}
+bandido-clojure.core> (let [x {'(2 3) 6}] x)
+{(2 3) 6}
+bandido-clojure.core> (let [x {'(2 3) 6}] 
+(cond 
+(contain '(2 3) x  "yea man")))
+Syntax error macroexpanding cond at (bandido-clojure:localhost:60646(clj)*:272:1).
+cond requires an even number of forms
+bandido-clojure.core> (let [x {'(2 3) 6}] 
+(cond 
+(contain '(2 3) x  "yea man")
+(contain '(4 3) x "no man")))
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:278:1).
+Unable to resolve symbol: contain in this context
+bandido-clojure.core> (let [x {'(2 3) 6}] 
+(cond 
+(contains? '(2 3) x  "yea man")
+(contains? '(4 3) x "no man")))
+Execution error (ArityException) at bandido-clojure.core/eval7549 (form-init7413964668609836877.clj:284).
+Wrong number of args (3) passed to: clojure.core/contains?
+bandido-clojure.core> (let [x {'(2 3) 6}] 
+(cond 
+(contains? '(2 3) x)  "yea man"
+(contains? '(4 3) x)  "no man"))
+Execution error (IllegalArgumentException) at bandido-clojure.core/eval7551 (form-init7413964668609836877.clj:290).
+contains? not supported on type: clojure.lang.PersistentList
+bandido-clojure.core> (let [x {'(2 3) 6}] 
+(cond 
+(contains? x '(2 3))  "yea man"
+(contains? x '(4 3))  "no man"))
+"yea man"
+bandido-clojure.core> (let [u1 2 u2 3 x {'(2 3) 6}] 
+(cond 
+(contains? x '(2 3))  "yea man"
+(contains? x '(4 3))  "no man"))
+"yea man"
+bandido-clojure.core> (let [u1 2 u2 3 x {'(2 3) 6}] 
+(cond 
+(contains? x '(2 3))  "yea man"
+(contains? x '(4 3))  "no man"))
+"yea man"
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {'(2 3) 6}] 
+(cond 
+(contains? x '(u1 u2)) ('(u1 u2) x)
+(contains? x '(4 3))  "no man"))
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:313:1).
+Unable to resolve symbol: x in this context
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {'(2 3) 6}] 
+(cond 
+(contains? g '(u1 u2)) ('(u1 u2) g)
+(contains? g '(4 3))  "no man"))
+nil
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {'(2 3) 6}] 
+(cond 
+(contains? g '(u1 u2)) ('(u1 u2) g)
+(contains? g '(4 3))  "no man"))
+nil
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) ([u1 u2] g)
+(contains? g [4 3])  "no man"))
+Execution error (IllegalArgumentException) at bandido-clojure.core/eval7564 (form-init7413964668609836877.clj:335).
+Key must be integer
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(contains? g [4 3])  "no man"))
+6
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #(0 1) u1))  "no man"))
+6
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #(0 1) u1)
+(and (contains #(0 1) u2))) (eval-op op u1 u2)))
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:359:6).
+Unable to resolve symbol: contains in this context
+bandido-clojure.core> (let [u1 2 
+u2 3 
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #(0 1) u1)
+(and (contains? #(0 1) u2))) (eval-op op u1 u2)))
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:368:30).
+Unable to resolve symbol: op in this context
+bandido-clojure.core> (let [u1 2 
+u2 3 
+op :or
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #(0 1) u1)
+(and (contains? #(0 1) u2))) (eval-op op u1 u2)))
+6
+bandido-clojure.core> (let [u1 0 
+u2 1 
+op :or
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #(0 1) u1)
+(and (contains? #(0 1) u2))) (eval-op op u1 u2)))
+Execution error (IllegalArgumentException) at bandido-clojure.core/eval7587 (form-init7413964668609836877.clj:386).
+contains? not supported on type: bandido_clojure.core$eval7587$fn__7588
+bandido-clojure.core> (let [u1 0 
+u2 1 
+op :or
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #[0 1] u1)
+(and (contains? #[0 1] u2))) (eval-op op u1 u2)))
+Syntax error reading source at (REPL:396:22).
+Reader tag must be a symbol
+bandido-clojure.core> (contains? #[0 1] u1)
+Syntax error reading source at (REPL:400:40).
+Reader tag must be a symbol
+bandido-clojure.core> (contains? #[0 1] 8)
+Syntax error reading source at (REPL:403:40).
+Reader tag must be a symbol
+bandido-clojure.core> (contains? 0 #[0 1])
+Syntax error reading source at (REPL:406:42).
+Reader tag must be a symbol
+bandido-clojure.core> (contains? 0 #{0 1})
+Execution error (IllegalArgumentException) at bandido-clojure.core/eval7594 (form-init7413964668609836877.clj:409).
+contains? not supported on type: java.lang.Long
+bandido-clojure.core> (contains? #{0 1} 0)
+true
+bandido-clojure.core> (let [u1 0 
+u2 1 
+op :or
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #{0 1} u1)
+(and (contains? #{0 1} u2))) (eval-op op u1 u2)))
+1
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (t u)) 
+[2 1 0]
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (-> t u)) 
+Execution error (ClassCastException) at bandido-clojure.core/eval7610 (form-init7413964668609836877.clj:439).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [t {0 [4 0 0],
+                               1 [4 1 1],
+                               2 [3 0 1],
+                               3 [2 1 0],
+                               4 [2 0 1],
+                               5 [1 0 2],
+                               6 [1 3 4]}
+                            u 3] (-> (t u)
+                                     (first)))
+2
+bandido-clojure.core> (let [t {0 [4 0 0],
+                               1 [4 1 1],
+                               2 [3 0 1],
+                               3 [2 1 0],
+                               4 [2 0 1],
+                               5 [1 0 2],
+                               6 [1 3 4]}
+                            u 3] (-> (t u)
+                                     (second)))
+1
+bandido-clojure.core> (let [t {0 [4 0 0],
+                               1 [4 1 1],
+                               2 [3 0 1],
+                               3 [2 1 0],
+                               4 [2 0 1],
+                               5 [1 0 2],
+                               6 [1 3 4]}
+                            u 3] (-> (t u)
+                                     (third)))
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:470:38).
+Unable to resolve symbol: third in this context
+bandido-clojure.core> (let [t {0 [4 0 0],
+                               1 [4 1 1],
+                               2 [3 0 1],
+                               3 [2 1 0],
+                               4 [2 0 1],
+                               5 [1 0 2],
+                               6 [1 3 4]}
+                            u 3] (-> (t u)
+                                     (nth 3)))
+Execution error (IndexOutOfBoundsException) at bandido-clojure.core/eval7617 (form-init7413964668609836877.clj:481).
+null
+bandido-clojure.core> (let [t {0 [4 0 0],
+                               1 [4 1 1],
+                               2 [3 0 1],
+                               3 [2 1 0],
+                               4 [2 0 1],
+                               5 [1 0 2],
+                               6 [1 3 4]}
+                            u 3] (as-> ite (t u)
+                                   (nth ite 3)))
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:491:34).
+(t u) - failed: simple-symbol? at: [:bindings :form :local-symbol] spec: :clojure.core.specs.alpha/local-name
+(t u) - failed: vector? at: [:bindings :form :seq-destructure] spec: :clojure.core.specs.alpha/seq-binding-form
+(t u) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-bindings
+(t u) - failed: map? at: [:bindings :form :map-destructure] spec: :clojure.core.specs.alpha/map-special-binding
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (as-> (t u) ite (nth ite 3)))
+Execution error (IndexOutOfBoundsException) at bandido-clojure.core/eval7620 (form-init7413964668609836877.clj:505).
+null
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (as-> (t u) ite (nth ite 3)))
+Execution error (IndexOutOfBoundsException) at bandido-clojure.core/eval7622 (form-init7413964668609836877.clj:515).
+null
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (->> (t u)  (nth 3)))
+Execution error (ClassCastException) at bandido-clojure.core/eval7624 (form-init7413964668609836877.clj:525).
+clojure.lang.PersistentVector cannot be cast to java.lang.Number
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (->> (t u)))
+[2 1 0]
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (-> (t u) (partial nth) 3))
+Execution error (ClassCastException) at bandido-clojure.core/eval7628 (form-init7413964668609836877.clj:544).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (-> (t u) (nth 3)))
+Execution error (IndexOutOfBoundsException) at bandido-clojure.core/eval7630 (form-init7413964668609836877.clj:554).
+null
+bandido-clojure.core> (let [t {0 [4 0 0],
+1 [4 1 1],
+2 [3 0 1],
+3 [2 1 0],
+4 [2 0 1],
+5 [1 0 2],
+6 [1 3 4]}
+u 3] (-> (t u) (nth 2)))
+0
+bandido-clojure.core> (let [u1 0 
+u2 1 
+op :or
+g {[2 3] 6}] 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #{0 1} u1)
+(and (contains? #{0 1} u2))) (eval-op op u1 u2)))
+1Syntax error compiling at (core.clj:129:9).
+Unable to resolve symbol: pack-operation in this context
+Syntax error compiling at (core.clj:116:11).
+Unable to resolve symbol: t1 in this context
+
+bandido-clojure.core> (let [u1 0 
+u2 1 
+op :or
+g {[2 3] 6} 
+t {1 [4 1 1]
+2 [3 0 1]
+3 [2 1 0]
+4 [2 0 1]
+5 [1 0 2]
+6 [1 3 4]}
+u 3 
+(cond 
+(contains? g [u1 u2]) (g [u1 u2])
+(-> (contains? #{0 1} u1)
+(and (contains? #{0 1} u2))) (eval-op op u1 u2)
+(= (v u1 t) (v u2 t))))) 
+
+Syntax error reading source at (REPL:594:24).
+Unmatched delimiter: )
+bandido-clojure.core> (let [bdd init-table 4] (mk1 [4 0 1]))
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:598:23).
+[bdd init-table 4] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
+bandido-clojure.core> (let [bdd init-table 4] (mk1 [4 0 1] bdd))
+Syntax error macroexpanding clojure.core/let at (bandido-clojure:localhost:60646(clj)*:601:23).
+[bdd init-table 4] - failed: even-number-of-forms? at: [:bindings] spec: :clojure.core.specs.alpha/bindings
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (core.clj:95).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (bdd))
+Execution error (ClassCastException) at bandido-clojure.core/eval7655 (form-init7413964668609836877.clj:607).
+bandido_clojure.core.PartialResult cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] bdd)
+{:t {0 [5 0 0], 1 [5 1 1]}, :max-u 1, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (core.clj:95).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (core.clj:95).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (core.clj:95).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (core.clj:95).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (core.clj:95).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/partial-result->ht (form-init7413964668609836877.clj:103).
+Wrong number of args (1) passed to: clojure.spec.alpha/valid?
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ClassCastException) at bandido-clojure.core/pack-operation-u (form-init7413964668609836877.clj:114).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ClassCastException) at bandido-clojure.core/pack-operation-u (form-init7413964668609836877.clj:114).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ClassCastException) at bandido-clojure.core/pack-operation-u (form-init7413964668609836877.clj:114).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ClassCastException) at bandido-clojure.core/pack-operation-u (form-init7413964668609836877.clj:114).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ClassCastException) at bandido-clojure.core/pack-operation-u (form-init7413964668609836877.clj:114).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}Syntax error compiling at (core.clj:124:7).
+Unable to resolve symbol: l in this context
+
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (IllegalArgumentException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args passed to keyword: :max-u
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ClassCastException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+java.lang.Long cannot be cast to clojure.lang.IFn
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args (0) passed to: bandido-clojure.core/mk1/fn--7736
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args (0) passed to: bandido-clojure.core/mk1/fn--7749
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args (0) passed to: bandido-clojure.core/mk1/fn--7760
+bandido-clojure.core> (inc 3)
+4
+bandido-clojure.core> (-> 3 inc)
+4
+bandido-clojure.core> (->> 3 inc)
+4
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args (0) passed to: bandido-clojure.core/mk1/fn--7777
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)]  bdd)
+{:t {0 [5 0 0], 1 [5 1 1]}, :max-u 1, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)]  (pack-operation-u (#(-> %1 (:max-u) (inc))) [i l h] bdd))
+Syntax error compiling at (bandido-clojure:localhost:60646(clj)*:681:50).
+Unable to resolve symbol: i in this context
+bandido-clojure.core> (let [bdd (init-table 4)]  (pack-operation-u (#(-> %1 (:max-u) (inc))) [3 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/eval7794 (form-init7413964668609836877.clj:684).
+Wrong number of args (0) passed to: bandido-clojure.core/eval7794/fn--7795
+bandido-clojure.core> (let [bdd (init-table 4)]  (#(-> %1 (:max-u) (inc)) bdd))
+2
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args (0) passed to: bandido-clojure.core/mk1/fn--7810
+bandido-clojure.core> '''
+Syntax error reading source at (REPL:694:1).
+EOF while reading
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+Execution error (ArityException) at bandido-clojure.core/mk1 (form-init7413964668609836877.clj:128).
+Wrong number of args (0) passed to: bandido-clojure.core/mk1/fn--7810
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [u1 0 
+                            u2 1 
+                            op :or
+                            g {[2 3] 6} 
+                            t {0 [4 0 0]
+                               1 [4 1 1]
+                               2 [3 0 1]
+                               3 [2 1 0]
+                               4 [2 0 1]
+                               5 [1 0 2]
+                               6 [1 3 4]}
+                            u 3 
+                            (cond 
+                              (contains? g [u1 u2]) (g [u1 u2])
+                              (-> (contains? #{0 1} u1)
+                                  (and (contains? #{0 1} u2))) (eval-op op u1 u2)
+                              (= (v u1 t) (v u2 t)))))
+
+Syntax error reading source at (REPL:724:54).
+Unmatched delimiter: )
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1 [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [bdd (init-table 4)] (mk1a [4 0 1] bdd))
+{:t {0 [5 0 0], 1 [5 1 1], 2 [4 0 1]}, :max-u 2, :u nil}
+bandido-clojure.core> (let [u1 0 
+u2 1 
+op :or
+g {[2 3] 6} 
+t {0 [4 0 0]
+   1 [4 1 1]
+   2 [3 0 1]
+   3 [2 1 0]
+   4 [2 0 1]
+   5 [1 0 2]
+   6 [1 3 4]}
+u 3 
+(cond 
+  (contains? g [u1 u2]) pack-operation-u (g [u1 u2]) 
+  (-> (contains? #{0 1} u1)
+      (and (contains? #{0 1} u2))) (eval-op op u1 u2)
+  (= (v u1 t) (v u2 t)
