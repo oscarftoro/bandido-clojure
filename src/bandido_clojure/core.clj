@@ -66,6 +66,9 @@
 
 (defn one* [] 1)
 
+;;; ######################################################## 
+;;; ###                 CONFIGURATION                    ###
+;;; ########################################################
 
 (defrecord Bdd [t max-u ])
 (defrecord PartialResult [t max-u u])
@@ -91,8 +94,8 @@
    :max-u 1
    :u     nil})
 
-;; helper functions to extract values of ite vectors
-;; given a ite vector and a t table, returns the corresponding value
+;;; helper functions to extract values of ite vectors
+;;; given a ite vector and a t table, returns the corresponding value
 
 (defn v    [u t] (-> (t u) (first))
 (defn low  [u t] (-> (t u) (second))
@@ -100,28 +103,50 @@
 
 (defn partial-result->ht [pr]
   "Takes a partial result and returns a map h which is the inverse of t"
-  {:pre [(s/valid? ::bspec/partial-result)]}
+  {:pre [(s/valid? ::bspec/partial-result pr)]}
   (clojure.set/map-invert (:t pr)))
 
-(defn map->ht [m]
+(Defn map->ht [m]
   "Takes a map and returns a map h; the inverse of t"
   (clojure.set/map-invert (:t m)))
 
+
+(defn- pack-operation-u [operation vals pr]
+  "returns a partial result containing the relevant data after applying an operation
+  on u given some values and a context defined by a partial result pr"  
+  (let [u operation
+        t1 (conj (:t pr) [u vals])]
+    (map->PartialResult
+     {:t     t1
+      :max-u u})))
+  
+;;; ######################################################## 
+;;; ###                 MAKE ALGORITHM                   ###
+;;; ########################################################
+  
 (defn mk1 [[i l h] pr]
   "The core of building reduced BDDs.
    Make a new entry representing a node in table t.
    A partial result is returned" 
-  (if (= l h)
-    pr
+  (if (= l h) pr
     (let [ht (partial-result->ht pr)]
       (if (contains? ht [i l h])
         (assoc :u ([i l h] ht) pr) ; a partial-result 
-        (let [u  (inc (:max-u pr))
-              t1 (conj (:t pr) [u [i l h]])]
-          (map->PartialResult
-           {:t     t1
-            :max-u u}))))))
-
+        (pack-operation-u (-> pr (:max-u) (inc)) [i l h] pr)))))
+      
+      ;; Mk using cond instead of if do not gain soo much 
+(defn mk1a [[i l h] pr]
+  (cond
+    (= l h) pr
+    :else (let [ht (partial-result->ht pr)]
+            (if (contains? ht [i l h])
+              (assoc :u ([i l h] ht) pr) ; a partial-result
+              (let [u  (inc (:max-u pr))
+                    t1 (conj (:t pr) [u [i l h]])]
+                (map->PartialResult
+                 {:t     t1
+                  :max-u u}))))))
+      
 
 (defn mk2 [[i l h] m]
   "The essence of building reduced BDDs.
@@ -136,21 +161,32 @@
               t1 (conj (:t m) [u [i l h]])]
           {:t     t1
            :max-u u})))))
+  
+;;; a mk3 could be imnplemented using the map metadata of the object to
+;;; store var-num this will require a init-table3 that uses with-meta 
 
-;; a mk3 could be imnplemented using the map metadata of the object to
-;; store var-num this will require a init-table3 that uses with-meta 
+;;; ######################################################## 
+;;; ###                APPLY ALGORITHM                   ###
+;;; ########################################################
 
 
 (defn- eval-op
   [op u1 u2]
-   (case op
-     :and (and* u1 u2)
-     :or  (or* u1 u2)))
-     
+  (case op
+    :and (and* u1 u2)
+    :or  (or* u1 u2))))
 
 (defn- app [op u1 u2 pr g]
-  (cond
-    (g (u1,u2)) ))
-(defn apply [op u1 u2 pr]
-  (let [g {}]
-    (app op u1 u2 pr g)))
+  (let [t (:t pr)]  
+    (cond
+      (contains? g [u1 u2]) (g [u1 u2])
+      (-> (contains? #{0 1} u1)
+          (and (contains? #{0 1} u2))) (eval-op op u1 u2)
+      (= (v u1 t) (v u2 t)) 
+      (< (v u1 t) (v u2 t))
+      :else 1))) 
+
+ (defn apply [op u1 u2 pr]
+   (let [g {}]
+     (app op u1 u2 pr g)))
+  
