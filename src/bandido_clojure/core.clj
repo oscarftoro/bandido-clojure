@@ -82,10 +82,9 @@
 
 (defn init-table [var-num]
   "Initialise a record representing a node containing a table(map) u -> [ i l h].
-   It returns a PartialResult record where:
+   It returns a Bdd record where:
    `:t` is the unique table that represent a single, multirooted graph.
-   `:max-u` is the largest number representing the last variable of the bdd.
-   `:u` is the current result which is nil at the begining.
+   `:u` is the current result which is 1 at the begining.
  
    The algorithms are axpecting to return different values of :u but since this is 
    is for the initialisation phase, the value of :u is nil"
