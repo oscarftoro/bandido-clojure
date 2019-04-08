@@ -13,8 +13,10 @@
 (s/def ::h   (s/map-of ::ite int?))                       
 
 (s/fdef ::->Bdd
-  :args (s/cat ::t ::uid))
+  :args (s/cat :t ::t :uid ::uid))
 
+(s/fdef ::->Bdds
+  :args (s/cat :t ::t :uid (s/coll-of ::uid :kind vector?)))
 (defn var-num-in-t [pr var-num]
   "Ensure that the values i for 0 and 1 in :t corresponds to var-num.
    Remember that :t is a map u -> [i l h] where i is the variable number var-num, 
@@ -31,31 +33,29 @@
                 expected (inc var-num)]
             (and (= z o) (= expected z))))))
 
-(s/def ::partial-result (s/keys :req-un [::t
-                                         ::uid
-                                         ::uid]))
+(s/def ::bdd (s/keys :req-un [::t
+                              ::uid]))
 
 (s/fdef ::init-table
   :args (:var-num ::vid)
-  :ret ::partial-result
+  :ret ::bdd
   :fn #(var-num-in-t :ret :var-num))
 
-(s/fdef ::->PartialResult
+(s/fdef ::->Bdd
   :args (s/cat :t     ::t 
-               :max-u ::uid 
                :u     ::uid)
-  :ret  ::partial-result)
+  :ret  ::bdd)
 
 (s/def ::init-t (s/coll-of ::h :kind map? :count? 3 ))
 
-(s/fdef ::partial-result->ht
-  :args (:pr ::partial-result)
+(s/fdef ::bdd->ht
+  :args (:pr ::bdd)
   :ret ::h )
 
 (s/fdef ::mk1
-  :args (s/cat :ite ::ite :pr ::->ParialResult)
-  :ret ::partial-result)
+  :args (s/cat :ite ::ite :pr ::->Bdd)
+  :ret ::bdd)
 
 (s/fdef ::mk2
   :args (s/cat :ite ::ite :m map?)
-  :ret ::partial-result)
+  :ret map?)

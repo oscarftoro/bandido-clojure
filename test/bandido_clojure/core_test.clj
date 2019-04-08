@@ -9,7 +9,7 @@
             [clojure.spec.test.alpha :as stest]))
 
 (deftest init-table-test
-  (testing "init-table should return a partial result with a table t with two elements")
+  (testing "init-table should return a Bdd with a table t with two elements")
     (let [t (init-table 5)
           t-size (count t)]
-      (is (= 3  t-size))))
+      (is (= 2  t-size))))
