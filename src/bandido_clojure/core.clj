@@ -68,12 +68,12 @@
 
 
 (defrecord Bdd
-  "A BDD is a tuple (t, uid) such that t is a map of type uid -> [i l h]
-   and uid is an integer that stands for unique id. This tuple is represented in this case
+  "A BDD is a tuple (t, uid) such that `t` is a map of type `uid -> [i l h]`
+   and `uid is an integer that stands for unique id. This tuple is represented in this case
    as a record.
-   The variable i represent the index of a variable x_i,
-   for instance, variables are represented as x_1, x_2, x_3...x_n. Variable l represents 
-   the low branch and h the high branch both are integers of type uid."
+   The variable `i` represents the index of a variable x_i,
+   for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
+   the low branch whereas `h`, the high branch. Both are integers of type uid."
   [t uid])
 (defrecord Bdds
   "Bdds is a record that represents more than one boolean expression, the roots
@@ -84,10 +84,10 @@
   "Initialise a record representing a node containing a table(map) u -> [ i l h].
    It returns a Bdd record where:
    `:t` is the unique table that represent a single, multirooted graph.
-   `:u` is the current result which is 1 at the begining.
+   `:uid` is the current result which is 1 at the begining.
  
-   The algorithms are axpecting to return different values of :u but since this is 
-   is for the initialisation phase, the value of :u is nil"
+   The algorithms are expecting to return different values of `:u` but since this is 
+   is for the initialisation phase, the value of `:u` is nil"
   
   {:pre [(s/valid? ::bspec/vid var-num)]}
   (map->Bdd {:t     {0 [(inc var-num) 0 0] 1 [(inc var-num) 1 1]}
@@ -107,12 +107,12 @@
 (defn high [u t] (-> (t u) (nth 2)))
   
 (defn bdd->ht [bdd]
-  "Takes a partial result and returns a map h which is the inverse of t"
+  "Takes a partial result and returns a map `h` which is the inverse of `t`"
   {:pre [(s/valid? ::bspec/bdd bdd)]}
   (clojure.set/map-invert (:t bdd)))
 
 (defn bdd-map->ht [bdd-map]
-  "Takes a map representing a bdd and returns a map h; the inverse of t"
+  "Takes a map representing a bdd and returns a map `h`; the inverse of `t`"
   (clojure.set/map-invert (:t bdd-map)))
 
 (defn- pack-operation-uid [operation vals bdd]
@@ -135,8 +135,8 @@
   
 (defn mk1 [[i l h] bdd]
   "The core of building reduced BDDs.
-   Make a new entry representing a node in table t.
-   A partial result is returned" 
+   Make a new entry representing a node in table `t`.
+   A Bdd is returned." 
   (if (= l h) bdd
     (let [ht (bdd->ht bdd)]
       (if (contains? ht [i l h])
