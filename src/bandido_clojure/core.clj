@@ -1,7 +1,7 @@
 (ns bandido-clojure.core
-  (:require [clojure.set        :as set]
+  (:require [clojure.set           :as set]
             [bandido-clojure.specs :as bspec]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha    :as s]))
 
 (defn const [b] b)
 
@@ -66,9 +66,19 @@
 ;;; ###                 CONFIGURATION                    ###
 ;;; ########################################################
 
-(defrecord Bdd  [t uid ])
-(defrecord Bdds [t uids])
-(defrecord PartialResult [t max-u u])
+
+(defrecord Bdd
+  "A BDD is a tuple (t, uid) such that t is a map of type uid -> [i l h]
+   and uid is an integer that stands for unique id. This tuple is represented in this case
+   as a record.
+   The variable i represent the index of a variable x_i,
+   for instance, variables are represented as x_1, x_2, x_3...x_n. Variable l represents 
+   the low branch and h the high branch both are integers of type uid."
+  [t uid])
+(defrecord Bdds
+  "Bdds is a record that represents more than one boolean expression, the roots
+   of those expressions are the uid elements of a vector of uids."
+  [t uids])
 
 (defn init-table [var-num]
   "Initialise a record representing a node containing a table(map) u -> [ i l h].
