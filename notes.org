@@ -78,3 +78,22 @@ representing a variable.
 * Refactoring
 1. activate semantic-mode
 2. 
+
+
+ (let [u1 0 
+                            u2 1 
+                            op :or
+                            g {[2 3] 6} 
+                            t {0 [4 0 0]
+                               1 [4 1 1]
+                               2 [3 0 1]
+                               3 [2 1 0]
+                               4 [2 0 1]
+                               5 [1 0 2]
+                               6 [1 3 4]}
+                            u 3 
+                            (cond 
+                              (contains? g [u1 u2]) (g [u1 u2])
+                              (-> (contains? #{0 1} u1)
+                                  (and (contains? #{0 1} u2))) (eval-op op u1 u2)
+                              (= (v u1 t) (v u2 t)))))

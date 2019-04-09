@@ -66,19 +66,21 @@
 ;;; ###                 CONFIGURATION                    ###
 ;;; ########################################################
 
-
-(defrecord Bdd
+(comment
   "A BDD is a tuple (t, uid) such that `t` is a map of type `uid -> [i l h]`
    and `uid is an integer that stands for unique id. This tuple is represented in this case
    as a record.
    The variable `i` represents the index of a variable x_i,
    for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
-   the low branch whereas `h`, the high branch. Both are integers of type uid."
-  [t uid])
-(defrecord Bdds
+   the low branch whereas `h`, the high branch. Both are integers of type uid.")
+
+(defrecord Bdd [t uid])
+
+(comment
   "Bdds is a record that represents more than one boolean expression, the roots
-   of those expressions are the uid elements of a vector of uids."
-  [t uids])
+   of those expressions are the uid elements of a vector of uids.")
+
+(defrecord Bdds [t uids])
 
 (defn init-table [var-num]
   "Initialise a record representing a node containing a table(map) u -> [ i l h].
@@ -115,7 +117,8 @@
   "Takes a map representing a bdd and returns a map `h`; the inverse of `t`"
   (clojure.set/map-invert (:t bdd-map)))
 
-(defn- pack-operation-uid [operation vals bdd]
+
+(defn- pack-operation-uid [operation vals bdd] ; naming and placing this thing is challenging 
   "returns a partial result containing the relevant data after applying an operation
   on u given some values and a context defined by a Bdd"  
   (let [uid operation
@@ -123,12 +126,14 @@
     (map->Bdd
      {:t     t1
       :uid uid})))
-  
-(defn- pr->update-uid [operation pr]
+
+
+(defn- update-uid [operation bdd] ; same here 
   "returns an updated Bdd containing the relevant data after applying an operation
   on u "  
   (let [uid operation]
-    (update pr :uid uid)))  
+    (update bdd :uid uid)))
+
 ;;; ######################################################## 
 ;;; ###                 MAKE ALGORITHM                   ###
 ;;; ########################################################
@@ -171,8 +176,8 @@
           {:t     t1
            :max-u u})))))
 
-;;; a mk3 could be imnplemented using the map metadata of the object to
-;;; store var-num this will require a init-table3 that uses with-meta 
+;;; a mk3 could be implemented using the map metadata of the object to
+;;; store var-num, this will require an init-table3 that uses with-meta 
 
 ;;; ######################################################## 
 ;;; ###                APPLY ALGORITHM                   ###
@@ -186,19 +191,32 @@
     :or  (or* u1 u2)))
 
   
-(comment "
-#_(defn- app [op u1 u2 bdd g]
+(defn- app [op u1 u2 bdd g]
   (let [t (:t bdd)]  
     (cond
-      (contains? g [u1 u2]) (pack-operation-u (g [u1 u2]) 
+      (contains? g [u1 u2])
+        (update-uid (g [u1 u2]) bdd) 
       (-> (contains? #{0 1} u1)
-          (and (contains? #{0 1} u2))) (eval-op op u1 u2)
-      (= (v u1 t) (v u2 t)) 
+          (and (contains? #{0 1} u2)))
+        (update-uid (eval-op op u1 u2) bdd)
+      (= (v u1 t) (v u2 t))
+        (update-uid  (mk1 (v u1 t)
+                          (recur op (low  u1 t) (low  u2 t) bdd g)
+                          (recur op (high u1 t) (high u2 t) bdd g)))
       (< (v u1 t) (v u2 t))
-      :else 1)))) 
+        (update-uid  (mk1 (v u1 t)
+                          (recur op (low  u1 t) u2 bdd g)
+                          (recur op (high u1 t) u2 bdd g)))
+      
+      :else
+        (update-uid  (mk1 (v u2 t)
+                          (let [ u  (:uid bdd)
+                                 g1 (conj g u [u1 u2])]               
+                            (recur op u1 (low  u2 t) bdd g1)
+                            (recur op u1 (high u2 t) bdd g1)))))))
 
- #_(defn apply [op u1 u2 pr]
+ (defn apply [op u1 u2 pr]
    (let [g {}]
      (app op u1 u2 pr g))) 
 
-")
+
