@@ -190,7 +190,7 @@
     :and (and* u1 u2)
     :or  (or* u1 u2)))
 
-  
+;; how to recur when app, issues two recursive calls through mk?  
 (defn- app [op u1 u2 bdd g]
   
   (loop [acc [u1 u2 bdd]
