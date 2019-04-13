@@ -1,4 +1,4 @@
-(ns bandido-clojure.core
+(ns bandido-clojure.core                
   (:require [clojure.set           :as set]
             [bandido-clojure.specs :as bspec]
             [clojure.spec.alpha    :as s]))
@@ -191,36 +191,26 @@
     :or  (or* u1 u2)))
 
 ;; how to recur when app, issues two recursive calls through mk?  
-(defn- app [op u1 u2 bdd g]
+(defn- app [op u1 u2 bdd g] 
+  (cond
+    (contains? g [u1 u2]) (update-uid (g [u1 u2]) bdd)
+    (-> (contains? #{0 1} u1)
+        (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
+    (= (v u1 t) (v u2 t)) (let [low  (app op (low  u1 t) (low  u2 t) bdd  g)
+                                high (app op (high u1 t) (high u2 t) bdd  g)]
+                            (update-uid  (mk1 [(v u1 t) low high] bdd)))
+    
+    (< (v u1 t) (v u2 t)) (let [low   (app op (low  u1 t) u2 bdd g)
+                                high  (app op (high u1 t) u2 bdd g)]
+                            (update-uid  (mk1 [(v u1 t) low high] bdd] bdd)))
   
-  (loop [acc [u1 u2 bdd]
-         t   (:t bdd)
-         bdd bdd
-         g g]
-    (cond
-      (contains? g [u1 u2])
-        (update-uid (g [u1 u2]) bdd) 
-      (-> (contains? #{0 1} u1
-      (and (contains? #{0 1} u2))))
-      (let [[u1* u2* bdd*] acc]
-        (update-uid (eval-op op u1* u2*) bdd*))
-      (= (v u1 t) (v u2 t))
-        (let [low  (recur [(low  u1 t) (low  u2 t) bdd] t g)
-              high (recur [(high u1 t) (high u2 t) bdd] t g)
-              bdd* (update-uid  (mk1 (v u1 t) low high))]  
-        (recur [low high bdd*] t g))
-      (< (v u1 t) (v u2 t))
-        (let [low] )  
-        (update-uid  (mk1 (v u1 t)
-                          (recur [(low  u1 t) u2 bdd] tg)
-                          (recur [(high u1 t) u2 bdd] t g)))
-      
-      :else
-        (update-uid  (mk1 (v u2 t)
-                          (let [ u  (:uid bdd)
-                                 g1 (conj g u [u1 u2])]  ; update g             
-                              (recur [u1 (low  u2 t) bdd] t g1)
-                              (recur [u1 (high u2 t) bdd] t g1)))))))
+  :else
+  (let [g1 (conj g u [u1 u2])]  ; update g
+    low  (app op u1 (low  u2 t) bdd g)
+    high (app op u1 (high u2 t) bdd g)]
+  
+  (update-uid  (mk1 (v u2 t) low high) bdd))
+                              
 
  (defn apply [op u1 u2 pr]
    (let [g {}]
