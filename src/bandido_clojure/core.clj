@@ -190,30 +190,37 @@
     :and (and* u1 u2)
     :or  (or* u1 u2)))
 
-;; how to recur when app, issues two recursive calls through mk?  
-(defn- app [op u1 u2 bdd g] 
-  (cond
-    (contains? g [u1 u2]) (update-uid (g [u1 u2]) bdd)
-    (-> (contains? #{0 1} u1)
-        (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
-    (= (v u1 t) (v u2 t)) (let [low  (app op (low  u1 t) (low  u2 t) bdd  g)
-                                high (app op (high u1 t) (high u2 t) bdd  g)]
-                            (update-uid  (mk1 [(v u1 t) low high] bdd)))
-    
-    (< (v u1 t) (v u2 t)) (let [low   (app op (low  u1 t) u2 bdd g)
-                                high  (app op (high u1 t) u2 bdd g)]
-                            (update-uid  (mk1 [(v u1 t) low high] bdd] bdd)))
-  
-  :else
-  (let [g1 (conj g u [u1 u2])]  ; update g
-    low  (app op u1 (low  u2 t) bdd g)
-    high (app op u1 (high u2 t) bdd g)]
-  
-  (update-uid  (mk1 (v u2 t) low high) bdd))
+
+(defn- app [op u1 u2 bdd]
+  (let [g (atom {})
+        t (:t bdd)]
+    (cond
+      (contains? g [u1 u2]) (update-uid (g [u1 u2]) bdd)
+      (-> (contains? #{0 1} u1)
+          (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
+      (= (v u1 t) (v u2 t)) (let [low  (app op (low  u1 t) (low  u2 t) bdd  g)
+                                  high (app op (high u1 t) (high u2 t) bdd  g)
+                                  bdd* (update-uid  (mk1 [(v u1 t) low high] bdd))
+                                  uid  (:uid bdd*)]
+                              (swap! g assoc uid [u1 u2])
+                              bdd*)
+      
+      (< (v u1 t) (v u2 t)) (let [low  (app op (low  u1 t) u2 bdd g)
+                                  high (app op (high u1 t) u2 bdd g)
+                                  bdd* (update-uid  (mk1 [(v u1 t) low high] bdd))
+                                  uid (:uid bdd*)]
+                              (swap! g assoc uid [u1 u2])
+                              bdd*)
+      
+      :else  (let [low  (app op u1 (low  u2 t) bdd)
+                   high (app op u1 (high u2 t) bdd)
+                   bdd* (update-uid  (mk1 [(v u2 t) low high] bdd))
+                   uid (:uid bdd*)]
+               (swap! g assoc uid [u1 u2]) ; update g
+               bdd*))))
                               
 
- (defn apply [op u1 u2 pr]
-   (let [g {}]
-     (app op u1 u2 pr g))) 
+(defn apply [op u1 u2 bdd]
+  (app op u1 u2 bdd)) 
 
 
