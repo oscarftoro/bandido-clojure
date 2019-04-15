@@ -144,8 +144,12 @@
   (if (= l h) bdd
       (let [ht (bdd->ht bdd)]
         (if (contains? ht [i l h])
-          (assoc bdd :uid (ht [i l h])) 
-          (pack-operation-uid (-> bdd (:uid) (inc)) [i l h] bdd)))))
+          (assoc bdd :uid (ht [i l h]));TODO: check wheter this is wrong
+          (let [u (-> bdd (:uid) (inc))
+                t1 (conj (:t bdd) [u [i l h]])]
+            (map->Bdd
+             {:t     t1
+              :uid u}))))))
 
 ;; Mk using cond instead of if do not gain soo much 
 (defn mk1a [[i l h] bdd]
@@ -197,7 +201,7 @@
         (let [bdd (apply f args)
               uid (:uid bdd)]
           (swap! mem assoc [(nth args 1) (nth args 2)] uid)
-          (println "uid " uid ": [" (nth args 1) " "  (nth args 2) "]")
+          #_(println "uid " uid ": [" (nth args 1) " "  (nth args 2) "]")
           bdd)))))
 
 (defn- app [op u1 u2 bdd]
@@ -205,17 +209,23 @@
     (cond
       (-> (contains? #{0 1} u1)
           (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
-      (= (v u1 t) (v u2 t)) (let [low  (-> (app op (low  u1 t) (low  u2 t) bdd) :uid)
-                                  high (-> (app op (high u1 t) (high u2 t) bdd) :uid)]
-                              (mk1 [(v u1 t) low high] bdd))
+      (= (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) (low  u2 t) bdd)
+                                  low  (:uid lbdd)
+                                  hbdd (app op (high u1 t) (high u2 t) lbdd)
+                                  high (:uid hbdd)]
+                              (mk1a [(v u1 t) low high] hbdd))
       
-      (< (v u1 t) (v u2 t)) (let [low  (-> (app op (low  u1 t) u2 bdd) :uid)
-                                  high (-> (app op (high u1 t) u2 bdd) :uid)]
-                              (mk1 [(v u1 t) low high] bdd))
+      (< (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) u2 bdd)
+                                  low  (:uid lbdd)
+                                  hbdd (app op (high u1 t) u2 lbdd)
+                                  high (:uid hbdd)]
+                              (mk1a [(v u1 t) low high] hbdd))
       
-      :else  (let [low  (-> (app op u1 (low  u2 t) bdd) :uid)
-                   high (-> (app op u1 (high u2 t) bdd) :uid)]
-               (mk1 [(v u2 t) low high] bdd)))))
+      :else  (let [lbdd (app op u1 (low u2 t) bdd)
+                   low  (:uid lbdd)
+                   hbdd (app op u1 (high u2 t) lbdd)
+                   high (:uid hbdd)]
+               (mk1a [(v u2 t) low high] hbdd)))))
 
 
 (def apply* (memo app))
