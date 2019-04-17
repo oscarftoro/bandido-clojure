@@ -4,7 +4,7 @@
    [clojure.test.check :as tc]
    [clojure.test.check.generators :as gen]
    [clojure.test.check.properties :as prop]
-   [bandido-clojure.core :refer [init-table mk1 v low]]
+   [bandido-clojure.core :refer [init-table mk1 v low high]]
    [bandido-clojure.specs :as specs]
    [clojure.spec.test.alpha :as stest]))
 
@@ -30,7 +30,7 @@
       (is (and (= 0 l4)
                (= 0 l2)
                (= 1 l3)
-               (+ 0 l5)))))
+               (= 0 l5)))))
   (deftest value-test
     (testing "given a bdd and a u returns the corresponding value")
     (let [v4 (v 4 bdd-test)
@@ -41,7 +41,19 @@
       (is (and (= 2 v4)
                (= 3 v2)
                (= 2 v3)
-               (+ 1 v5)))))
+               (= 1 v5)))))
+  (deftest high-test
+    (testing "given a bdd and a u returns the corresponding high")
+    (let [h4 (high 4 bdd-test)
+          h3 (high 3 bdd-test)
+          h2 (high 2 bdd-test)
+          h1 (high 1 bdd-test)
+          h5 (high 5 bdd-test)]
+      (is (and (= 1 h4)
+               (= 1 h2)
+               (= 0 h3)
+               (= 2 h5)))))
+  
   )
 
 
