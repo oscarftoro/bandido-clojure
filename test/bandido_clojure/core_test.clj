@@ -4,7 +4,7 @@
    [clojure.test.check :as tc]
    [clojure.test.check.generators :as gen]
    [clojure.test.check.properties :as prop]
-   [bandido-clojure.core :refer [init-table mk1 low]]
+   [bandido-clojure.core :refer [init-table mk1 v low]]
    [bandido-clojure.specs :as specs]
    [clojure.spec.test.alpha :as stest]))
 
@@ -20,10 +20,29 @@
 
 (deftest t-table-function-test
   (testing "tests related to table t")
+  (deftest low-test
+    (testing "given a bdd and a u returns the corresponding low")
+    (let [l4 (low 4 bdd-test)
+          l3 (low 3 bdd-test)
+          l2 (low 2 bdd-test)
+          l1 (low 1 bdd-test)
+          l5 (low 5 bdd-test)]
+      (is (and (= 0 l4)
+               (= 0 l2)
+               (= 1 l3)
+               (+ 0 l5)))))
   (deftest value-test
     (testing "given a bdd and a u returns the corresponding value")
-    (let [l (low 4 bdd-test)]
-      (is (= 0 l)))))
+    (let [v4 (v 4 bdd-test)
+          v3 (v 3 bdd-test)
+          v2 (v 2 bdd-test)
+          v1 (v 1 bdd-test)
+          v5 (v 5 bdd-test)]
+      (is (and (= 2 v4)
+               (= 3 v2)
+               (= 2 v3)
+               (+ 1 v5)))))
+  )
 
 
 (deftest init-table-test
