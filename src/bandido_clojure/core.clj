@@ -104,80 +104,80 @@
 ;;; helper functions to extract values of ite vectors
 ;;; given a ite vector and a t table, returns the corresponding value
 
-(defn v    [u t] (-> (t u) (first)))
-(defn low  [u t] (-> (t u) (second)))
-(defn high [u t] (-> (t u) (nth 2)))
+(defn v    [u bdd] (-> ((:t bdd) u) first))
+(defn low  [u bdd] (-> ((:t bdd) u) second))
+(defn high [u bdd] (-> ((:t bdd) u) (nth 2)))
 
 (defn bdd->ht [bdd]
-  "Takes a partial result and returns a map `h` which is the inverse of `t`"
-  {:pre [(s/valid? ::bspec/bdd bdd)]}
-  (clojure.set/map-invert (:t bdd)))
+"Takes a partial result and returns a map `h` which is the inverse of `t`"
+{:pre [(s/valid? ::bspec/bdd bdd)]}
+(clojure.set/map-invert (:t bdd)))
 
 (defn bdd-map->ht [bdd-map]
-  "Takes a map representing a bdd and returns a map `h`; the inverse of `t`"
-  (clojure.set/map-invert (:t bdd-map)))
+"Takes a map representing a bdd and returns a map `h`; the inverse of `t`"
+(clojure.set/map-invert (:t bdd-map)))
 
 
 (defn- pack-operation-uid [operation vals bdd] ; naming and placing this thing is challenging 
-  "returns a partial result containing the relevant data after applying an operation
+"returns a partial result containing the relevant data after applying an operation
   on u given some values and a context defined by a Bdd"  
-  (let [uid operation
-        t1 (conj (:t bdd) [uid vals])]
-    (map->Bdd
-     {:t     t1
-      :uid uid})))
+(let [uid operation
+      t1 (conj (:t bdd) [uid vals])]
+  (map->Bdd
+   {:t     t1
+    :uid uid})))
 
 
 (defn- update-uid [operation bdd] ; same here 
-  "returns an updated Bdd containing the relevant data after applying an operation
+"returns an updated Bdd containing the relevant data after applying an operation
   on u "
-  (assoc bdd :uid operation))
+(assoc bdd :uid operation))
 
 ;;; ######################################################## 
 ;;; ###                 MAKE ALGORITHM                   ###
 ;;; ########################################################
 
 (defn mk1 [[i l h] bdd]
-  "The core of building reduced BDDs.
+"The core of building reduced BDDs.
    Make a new entry representing a node in table `t`.
    A Bdd is returned." 
-  (if (= l h) bdd
-      (let [ht (bdd->ht bdd)]
-        (if (contains? ht [i l h])
-          (assoc bdd :uid (ht [i l h]));TODO: check wheter this is wrong
-          (let [u (-> bdd (:uid) (inc))
-                t1 (conj (:t bdd) [u [i l h]])]
-            (map->Bdd
-             {:t     t1
-              :uid u}))))))
+(if (= l h) bdd
+    (let [ht (bdd->ht bdd)]
+      (if (contains? ht [i l h])
+        (assoc bdd :uid (ht [i l h]));TODO: check wheter this is wrong
+        (let [u (-> bdd (:uid) (inc))
+              t1 (conj (:t bdd) [u [i l h]])]
+          (map->Bdd
+           {:t     t1
+            :uid u}))))))
 
 ;; Mk using cond instead of if do not gain soo much 
 (defn mk1a [[i l h] bdd]
-  (cond
-    (= l h) bdd
-    :else (let [ht (bdd->ht bdd)]
-            (if (contains? ht [i l h])
-              (assoc bdd :uid (ht [i l h])) 
-              (let [u  (inc (:uid bdd))
-                    t1 (conj (:t bdd) [u [i l h]])]
-                (map->Bdd
-                 {:t     t1
-                  :uid u}))))))
+(cond
+  (= l h) bdd
+  :else (let [ht (bdd->ht bdd)]
+          (if (contains? ht [i l h])
+            (assoc bdd :uid (ht [i l h])) 
+            (let [u  (inc (:uid bdd))
+                  t1 (conj (:t bdd) [u [i l h]])]
+              (map->Bdd
+               {:t     t1
+                :uid u}))))))
 
 
 (defn mk2 [[i l h] m]
-  "The essence of building reduced BDDs.
+"The essence of building reduced BDDs.
    Make a new entry representing a node in table t.
    A map result is returned" 
-  (if (= l h)
-    m
-    (let [ht (bdd-map->ht m)]
-      (if (contains? ht [i l h])
-        (assoc m :u (ht [i l h])) ; an updated map
-        (let [u  (inc (:max-u m))
-              t1 (conj (:t m) [u [i l h]])]
-          {:t     t1
-           :max-u u})))))
+(if (= l h)
+  m
+  (let [ht (bdd-map->ht m)]
+    (if (contains? ht [i l h])
+      (assoc m :u (ht [i l h])) ; an updated map
+      (let [u  (inc (:max-u m))
+            t1 (conj (:t m) [u [i l h]])]
+        {:t     t1
+         :max-u u})))))
 
 ;;; a mk3 could be implemented using the map metadata of the object to
 ;;; store var-num, this will require an init-table3 that uses with-meta 
@@ -188,44 +188,46 @@
 
 
 (defn- eval-op
-  [op u1 u2]
-  (case op
-    :and (and* u1 u2)
-    :or  (or* u1 u2)))
+[op u1 u2]
+(case op
+  :and (and* u1 u2)
+  :or  (or* u1 u2)))
 
 (defn- memo [f]
-  (let [mem (atom {})]
-    (fn [& args]
-      (if-let [e (find @mem [(nth args 1) (nth args 2)])]
-        (val e)
-        (let [bdd (apply f args)
-              uid (:uid bdd)]
-          (swap! mem assoc [(nth args 1) (nth args 2)] uid)
-          #_(println "uid " uid ": [" (nth args 1) " "  (nth args 2) "]")
-          bdd)))))
+(let [mem (atom {})]
+  (fn [& args]
+    (if-let [e (find @mem [(nth args 1) (nth args 2)])]
+      (val e)
+      (let [bdd (apply f args)
+            uid (:uid bdd)
+            u1 (nth args 1)
+            u2 (nth args 2)]
+        (swap! mem assoc [u1 u2] uid)
+        (println {uid [u1 u2]}) ;debugging
+        bdd)))))
 
 (defn- app [op u1 u2 bdd]
-  (let [t (:t bdd)]
-    (cond
-      (-> (contains? #{0 1} u1)
-          (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
-      (= (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) (low  u2 t) bdd)
-                                  low  (:uid lbdd)
-                                  hbdd (app op (high u1 t) (high u2 t) lbdd)
-                                  high (:uid hbdd)]
-                              (mk1a [(v u1 t) low high] hbdd))
-      
-      (< (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) u2 bdd)
-                                  low  (:uid lbdd)
-                                  hbdd (app op (high u1 t) u2 lbdd)
-                                  high (:uid hbdd)]
-                              (mk1a [(v u1 t) low high] hbdd))
-      
-      :else  (let [lbdd (app op u1 (low u2 t) bdd)
-                   low  (:uid lbdd)
-                   hbdd (app op u1 (high u2 t) lbdd)
-                   high (:uid hbdd)]
-               (mk1a [(v u2 t) low high] hbdd)))))
+(let [t (:t bdd)]
+  (cond
+    (-> (contains? #{0 1} u1)
+        (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
+    (= (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) (low  u2 t) bdd)
+                                low  (:uid lbdd)
+                                hbdd (app op (high u1 t) (high u2 t) lbdd)
+                                high (:uid hbdd)]
+                            (mk1 [(v u1 t) low high] hbdd))
+    
+    (< (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) u2 bdd)
+                                low  (:uid lbdd)
+                                hbdd (app op (high u1 t) u2 lbdd)
+                                high (:uid hbdd)]
+                            (mk1 [(v u1 t) low high] hbdd))
+    
+    :else  (let [lbdd (app op u1 (low u2 t) bdd)
+                 low  (:uid lbdd)
+                 hbdd (app op u1 (high u2 t) lbdd)
+                 high (:uid hbdd)]
+             (mk1 [(v u2 t) low high] hbdd)))))
 
 
 (def apply* (memo app))
