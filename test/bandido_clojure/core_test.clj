@@ -4,7 +4,7 @@
    [clojure.test.check :as tc]
    [clojure.test.check.generators :as gen]
    [clojure.test.check.properties :as prop]
-   [bandido-clojure.core :refer [init-table mk1 v low high]]
+   [bandido-clojure.core :refer [init-table mk1 mk1a v low high]]
    [bandido-clojure.specs :as specs]
    [clojure.spec.test.alpha :as stest]))
 
@@ -52,10 +52,7 @@
       (is (and (= 1 h4)
                (= 1 h2)
                (= 0 h3)
-               (= 2 h5)))))
-  
-  )
-
+               (= 2 h5))))))
 
 (deftest init-table-test
   (testing "init-table should return a Bdd with a table t with two elements")
@@ -89,6 +86,34 @@
           t (:t bdd3)
           t-size (count t)]
       (is (= 4 t-size)))))
+
+(deftest mk1a-should-make-test
+  (testing "that mk1a add a new node to the table")
+  (let [bdd (init-table 4)
+        bdd* (mk1a [4 1 0] bdd)
+        t (:t bdd*)
+        t-size (count t)]
+    (is (= 3 t-size))))
+
+(deftest mk1a-should-return-the-same-bdd-when-l-eq-h-test
+  (testing "mk1a do nothing when l = h but returns the same bdd"
+    (let [bdd (init-table 4)
+          bdd* (mk1a [4 1 1] bdd)
+          t (:t bdd*)
+          t-size (count t)]
+      (is (= 2 t-size)))))
+
+(deftest mk1a-should-be-efficient-test
+  (testing "mk1a returns the value saved in table h when it corresponds"
+    (let [bdd (init-table 4)
+          bdd1 (mk1a [4 1 0] bdd)
+          bdd2 (mk1a [4 0 1] bdd1)
+          bdd3 (mk1a [4 1 0] bdd2)
+          t (:t bdd3)
+          t-size (count t)]
+      (is (= 4 t-size)))))
+
+
 
 
 (use-fixtures :each setup )

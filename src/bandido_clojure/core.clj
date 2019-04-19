@@ -3,6 +3,9 @@
             [bandido-clojure.specs :as bspec]
             [clojure.spec.alpha    :as s]))
 
+
+
+
 (defn const [b] b)
 
 ;;; ######################################################## 
@@ -68,7 +71,7 @@
 
 (comment
   "A BDD is a tuple (t, uid) such that `t` is a map of type `uid -> [i l h]`
-   and `uid is an integer that stands for unique id. This tuple is represented in this case
+   and `uid` is an integer that stands for unique id. This tuple is represented in this case
    as a record.
    The variable `i` represents the index of a variable x_i,
    for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
@@ -119,7 +122,7 @@
 
 
 (defn- pack-operation-uid [operation vals bdd] ; naming and placing this thing is challenging 
-"returns a partial result containing the relevant data after applying an operation
+"returns a bdd containing the relevant data after applying an operation
   on u given some values and a context defined by a Bdd"  
 (let [uid operation
       t1 (conj (:t bdd) [uid vals])]
@@ -138,46 +141,45 @@
 ;;; ########################################################
 
 (defn mk1 [[i l h] bdd]
-"The core of building reduced BDDs.
+  "The core of building reduced BDDs.
    Make a new entry representing a node in table `t`.
    A Bdd is returned." 
-(if (= l h) bdd
-    (let [ht (bdd->ht bdd)]
-      (if (contains? ht [i l h])
-        (assoc bdd :uid (ht [i l h]));TODO: check wheter this is wrong
-        (let [u (-> bdd (:uid) (inc))
-              t1 (conj (:t bdd) [u [i l h]])]
-          (map->Bdd
-           {:t     t1
-            :uid u}))))))
+  (if (= l h) bdd
+      (let [ht (bdd->ht bdd)]
+        (if (contains? ht [i l h])
+          (assoc bdd :uid (ht [i l h])) ; returns the saved value in h
+          (let [u (-> bdd (:uid) (inc)) 
+                t1 (conj (:t bdd) [u [i l h]])]
+            (map->Bdd
+             {:t   t1
+              :uid u}))))))
 
 ;; Mk using cond instead of if do not gain soo much 
 (defn mk1a [[i l h] bdd]
-(cond
-  (= l h) bdd
-  :else (let [ht (bdd->ht bdd)]
-          (if (contains? ht [i l h])
-            (assoc bdd :uid (ht [i l h])) 
-            (let [u  (inc (:uid bdd))
-                  t1 (conj (:t bdd) [u [i l h]])]
-              (map->Bdd
-               {:t     t1
-                :uid u}))))))
+  (cond
+    (= l h) bdd
+    :else (let [ht (bdd->ht bdd)]
+            (if (contains? ht [i l h])
+              (assoc bdd :uid (ht [i l h])) 
+              (pack-operation-uid
+               (-> bdd (:uid) (inc))
+               [i l h]
+               bdd)))))
 
 
 (defn mk2 [[i l h] m]
-"The essence of building reduced BDDs.
+  "The essence of building reduced BDDs.
    Make a new entry representing a node in table t.
    A map result is returned" 
-(if (= l h)
-  m
-  (let [ht (bdd-map->ht m)]
-    (if (contains? ht [i l h])
-      (assoc m :u (ht [i l h])) ; an updated map
-      (let [u  (inc (:max-u m))
-            t1 (conj (:t m) [u [i l h]])]
-        {:t     t1
-         :max-u u})))))
+  (if (= l h)
+    m
+    (let [ht (bdd-map->ht m)]
+      (if (contains? ht [i l h])
+        (assoc m :u (ht [i l h])) ; an updated map
+        (let [u  (inc (:max-u m))
+              t1 (conj (:t m) [u [i l h]])]
+          {:t     t1
+           :max-u u})))))
 
 ;;; a mk3 could be implemented using the map metadata of the object to
 ;;; store var-num, this will require an init-table3 that uses with-meta 
@@ -188,23 +190,23 @@
 
 
 (defn- eval-op
-[op u1 u2]
-(case op
-  :and (and* u1 u2)
-  :or  (or* u1 u2)))
-
+  [op u1 u2]
+  (case op
+    :and (and* u1 u2)
+    :or  (or* u1 u2)))
+  
 (defn- memo [f]
-(let [mem (atom {})]
-  (fn [& args]
-    (if-let [e (find @mem [(nth args 1) (nth args 2)])]
-      (val e)
-      (let [bdd (apply f args)
-            uid (:uid bdd)
-            u1 (nth args 1)
-            u2 (nth args 2)]
-        (swap! mem assoc [u1 u2] uid)
-        (println {uid [u1 u2]}) ;debugging
-        bdd)))))
+  (let [mem (atom {})]
+    (fn [& args]
+      (if-let [e (find @mem [(nth args 1) (nth args 2)])]
+        (->> (args 3)             ; is the bdd
+             (update-uid (val e))) ; (val e) is the uid saved in g
+        (let [bdd (apply f args)
+              uid (:uid bdd)
+              u1 (nth args 1)
+              u2 (nth args 2)]
+          (swap! mem assoc [u1 u2] uid)
+          bdd))))) ; this bdd is not the one from f
 
 (defn- app [op u1 u2 bdd]
 (let [t (:t bdd)]
