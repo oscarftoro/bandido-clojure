@@ -112,29 +112,29 @@
 (defn high [u bdd] (-> ((:t bdd) u) (nth 2)))
 
 (defn bdd->ht [bdd]
-"Takes a partial result and returns a map `h` which is the inverse of `t`"
-{:pre [(s/valid? ::bspec/bdd bdd)]}
-(clojure.set/map-invert (:t bdd)))
+  "Takes a partial result and returns a map `h` which is the inverse of `t`"
+  {:pre [(s/valid? ::bspec/bdd bdd)]}
+  (clojure.set/map-invert (:t bdd)))
 
 (defn bdd-map->ht [bdd-map]
-"Takes a map representing a bdd and returns a map `h`; the inverse of `t`"
-(clojure.set/map-invert (:t bdd-map)))
+  "Takes a map representing a bdd and returns a map `h`; the inverse of `t`"
+  (clojure.set/map-invert (:t bdd-map)))
 
 
 (defn- pack-operation-uid [operation vals bdd] ; naming and placing this thing is challenging 
-"returns a bdd containing the relevant data after applying an operation
+  "returns a bdd containing the relevant data after applying an operation
   on u given some values and a context defined by a Bdd"  
-(let [uid operation
-      t1 (conj (:t bdd) [uid vals])]
-  (map->Bdd
-   {:t     t1
-    :uid uid})))
+  (let [uid operation
+        t1 (conj (:t bdd) [uid vals])]
+    (map->Bdd
+     {:t     t1
+      :uid uid})))
 
 
 (defn- update-uid [operation bdd] ; same here 
-"returns an updated Bdd containing the relevant data after applying an operation
+  "returns an updated Bdd containing the relevant data after applying an operation
   on u "
-(assoc bdd :uid operation))
+  (assoc bdd :uid operation))
 
 ;;; ######################################################## 
 ;;; ###                 MAKE ALGORITHM                   ###
@@ -194,7 +194,7 @@
   (case op
     :and (and* u1 u2)
     :or  (or* u1 u2)))
-  
+
 (defn- memo [f]
   (let [mem (atom {})]
     (fn [& args]
@@ -209,27 +209,26 @@
           bdd))))) ; this bdd is not the one from f
 
 (defn- app [op u1 u2 bdd]
-(let [t (:t bdd)]
   (cond
     (-> (contains? #{0 1} u1)
         (and (contains? #{0 1} u2))) (update-uid (eval-op op u1 u2) bdd)
-    (= (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) (low  u2 t) bdd)
-                                low  (:uid lbdd)
-                                hbdd (app op (high u1 t) (high u2 t) lbdd)
-                                high (:uid hbdd)]
-                            (mk1 [(v u1 t) low high] hbdd))
+    (= (v u1 bdd) (v u2 bdd)) (let [lbdd (app op (low  u1 bdd) (low  u2 bdd) bdd)
+                                    low  (:uid lbdd)
+                                    hbdd (app op (high u1 bdd) (high u2 bdd) lbdd)
+                                    high (:uid hbdd)]
+                                (mk1 [(v u1 bdd) low high] hbdd))
     
-    (< (v u1 t) (v u2 t)) (let [lbdd (app op (low  u1 t) u2 bdd)
-                                low  (:uid lbdd)
-                                hbdd (app op (high u1 t) u2 lbdd)
-                                high (:uid hbdd)]
-                            (mk1 [(v u1 t) low high] hbdd))
+    (< (v u1 bdd) (v u2 bdd)) (let [lbdd (app op (low  u1 bdd) u2 bdd)
+                                    low  (:uid lbdd)
+                                    hbdd (app op (high u1 bdd) u2 lbdd)
+                                    high (:uid hbdd)]
+                                (mk1 [(v u1 bdd) low high] hbdd))
     
-    :else  (let [lbdd (app op u1 (low u2 t) bdd)
+    :else  (let [lbdd (app op u1 (low u2 bdd) bdd)
                  low  (:uid lbdd)
-                 hbdd (app op u1 (high u2 t) lbdd)
+                 hbdd (app op u1 (high u2 bdd) lbdd)
                  high (:uid hbdd)]
-             (mk1 [(v u2 t) low high] hbdd)))))
+             (mk1 [(v u2 bdd) low high] hbdd))))
 
 
 (def apply* (memo app))

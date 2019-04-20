@@ -4,7 +4,7 @@
    [clojure.test.check :as tc]
    [clojure.test.check.generators :as gen]
    [clojure.test.check.properties :as prop]
-   [bandido-clojure.core :refer [init-table mk1 mk1a v low high]]
+   [bandido-clojure.core :refer [init-table mk1 mk1a v low high apply* map->Bdd ]]
    [bandido-clojure.specs :as specs]
    [clojure.spec.test.alpha :as stest]))
 
@@ -114,6 +114,26 @@
       (is (= 4 t-size)))))
 
 
-
+(deftest apply-should-behave-as-expected
+  (testing "apply should apply a logic formula to a bdd")
+  (let [bdd (init-table 3)
+        bdd1 (mk1 [3 0 1] bdd)
+        bdd2 (mk1 [2 1 0] bdd1)
+        bdd3 (mk1 [2 0 1] bdd2)
+        bdd4 (mk1 [1 0 2] bdd3)
+        bdd5 (mk1 [1 3 4] bdd4)
+        bdd6 (apply* :and 5 6 bdd5)
+        
+        expected (map->Bdd {:t {0 [4 0 0]
+                                1 [4 1 1]
+                                2 [3 0 1]
+                                3 [2 1 0]
+                                4 [2 0 1]
+                                5 [1 0 2]
+                                6 [1 3 4]
+                                7 [2 0 2]
+                                8 [1 0 7]}
+                            :uid 8})]
+    (is (= expected bdd6 ))))
 
 (use-fixtures :each setup )
