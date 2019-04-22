@@ -77,7 +77,7 @@
    for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
    the low branch whereas `h`, the high branch. Both are integers of type uid.")
 
-(defrecord Bdd [t uid])
+(defrecord Bdd [t uid luid])
 
 (comment
   "Bdds is a record that represents more than one boolean expression, the roots
@@ -96,12 +96,13 @@
   
   {:pre [(s/valid? ::bspec/vid var-num)]}
   (map->Bdd {:t     {0 [(inc var-num) 0 0] 1 [(inc var-num) 1 1]}
-             :uid 1}))
+             :uid 1
+             :luid 1}))
 
 
 (defn init-table2 [var-num]
   "Initialise a table that works with maps instead of records"
-  {:t     {0 [var-num 0 0] 1 [var-num 1 1]}
+  {:t     {0 [(inc var-num) 0 0] 1 [(inc var-num) 1 1]}
    :uid 1})
 
 ;;; helper functions to extract values of ite vectors
@@ -148,11 +149,12 @@
       (let [ht (bdd->ht bdd)]
         (if (contains? ht [i l h])
           (assoc bdd :uid (ht [i l h])) ; returns the saved value in h
-          (let [u (-> bdd (:uid) (inc)) 
+          (let [u (-> bdd (:luid) (inc)) 
                 t1 (conj (:t bdd) [u [i l h]])]
             (map->Bdd
              {:t   t1
-              :uid u}))))))
+              :uid u
+              :luid u}))))))
 
 ;; Mk using cond instead of if do not gain soo much 
 (defn mk1a [[i l h] bdd]
@@ -179,7 +181,7 @@
         (let [u  (inc (:max-u m))
               t1 (conj (:t m) [u [i l h]])]
           {:t     t1
-           :max-u u})))))
+           :uid u})))))
 
 ;;; a mk3 could be implemented using the map metadata of the object to
 ;;; store var-num, this will require an init-table3 that uses with-meta 
@@ -199,7 +201,7 @@
   (let [mem (atom {})]
     (fn [& args]
       (if-let [e (find @mem [(nth args 1) (nth args 2)])]
-        (->> (args 3)             ; is the bdd
+        (->> (args 3)              ; the bdd
              (update-uid (val e))) ; (val e) is the uid saved in g
         (let [bdd (apply f args)
               uid (:uid bdd)
@@ -230,7 +232,7 @@
                  high (:uid hbdd)]
              (mk1 [(v u2 bdd) low high] hbdd))))
 
-
 (def apply* (memo app))
+
 
 

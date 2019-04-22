@@ -4,7 +4,7 @@
    [clojure.test.check :as tc]
    [clojure.test.check.generators :as gen]
    [clojure.test.check.properties :as prop]
-   [bandido-clojure.core :refer [init-table mk1 mk1a v low high apply* map->Bdd ]]
+   [bandido-clojure.core :refer [init-table mk1 mk1a v low high apply* apply2* map->Bdd ]]
    [bandido-clojure.specs :as specs]
    [clojure.spec.test.alpha :as stest]))
 
@@ -133,7 +133,9 @@
                                 6 [1 3 4]
                                 7 [2 0 2]
                                 8 [1 0 7]}
-                            :uid 8})]
+                            :uid 8
+                            :luid 8})]
     (is (= expected bdd6 ))))
+
 
 (use-fixtures :each setup )

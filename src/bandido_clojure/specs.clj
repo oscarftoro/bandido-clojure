@@ -19,7 +19,7 @@
   :args (s/cat :t ::t :uid (s/coll-of ::uid :kind vector?)))
 (defn var-num-in-t [pr var-num]
   "Ensure that the values i for 0 and 1 in :t corresponds to var-num.
-   Remember that :t is a map u -> [i l h] where i is the variable number var-num, 
+   :t is a map u -> [i l h] where i is the variable number var-num, 
    l is a unique id of type u (for unique-id) called low and
    h is a unique id of type u called high.
    When initialising the table, the values of 0 and 1 are equal to the maximal expected value 
