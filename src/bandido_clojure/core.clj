@@ -70,9 +70,11 @@
 ;;; ########################################################
 
 (comment
-  "A BDD is a tuple (t, uid) such that `t` is a map of type `uid -> [i l h]`
-   and `uid` is an integer that stands for unique id. This tuple is represented in this case
-   as a record.
+  "A BDD is a tuple (t, uid, luid) such that `t` is a map of type `uid -> [i l h]`
+   and `uid` is an integer that stands for unique id and represents the current 
+   computed result. 
+   The value `luid` is the largest uid variable in table `t`.
+   The tuple (t,uid,luid) is represented in this implementation as a record.
    The variable `i` represents the index of a variable x_i,
    for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
    the low branch whereas `h`, the high branch. Both are integers of type uid.")
