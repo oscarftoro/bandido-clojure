@@ -13,10 +13,10 @@
 (s/def ::h   (s/map-of ::ite int?))                       
 
 (s/fdef ::->Bdd
-  :args (s/cat :t ::t :uid ::uid))
+  :args (s/cat :t ::t :uid ::uid :luid ::uid))
 
 (s/fdef ::->Bdds
-  :args (s/cat :t ::t :uid (s/coll-of ::uid :kind vector?)))
+  :args (s/cat :t ::t :uid (s/coll-of ::uid :kind vector?) :luid ::uid))
 (defn var-num-in-t [pr var-num]
   "Ensure that the values i for 0 and 1 in :t corresponds to var-num.
    :t is a map u -> [i l h] where i is the variable number var-num, 

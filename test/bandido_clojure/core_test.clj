@@ -4,7 +4,7 @@
    [clojure.test.check :as tc]
    [clojure.test.check.generators :as gen]
    [clojure.test.check.properties :as prop]
-   [bandido-clojure.core :refer [init-table mk1 mk1a v low high apply* apply2* map->Bdd ]]
+   [bandido-clojure.core :refer [init-table mk1 mk1a v low high apply* map->Bdd ]]
    [bandido-clojure.specs :as specs]
    [clojure.spec.test.alpha :as stest]))
 

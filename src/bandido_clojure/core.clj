@@ -85,7 +85,7 @@
   "Bdds is a record that represents more than one boolean expression, the roots
    of those expressions are the uid elements of a vector of uids.")
 
-(defrecord Bdds [t uids])
+(defrecord Bdds [t uids luid])
 
 (defn init-table [var-num]
   "Initialise a record representing a node containing a table(map) u -> [ i l h].
