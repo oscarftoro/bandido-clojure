@@ -6,8 +6,6 @@
 
 
 
-(defn const [b] b)
-
 ;;; ######################################################## 
 ;;; ###            PRIMITIVES ON 0 and 1                 ###
 ;;; ########################################################
@@ -158,7 +156,7 @@
               :uid u
               :luid u}))))))
 
-;; Mk using cond instead of if do not gain soo much 
+;; mk using cond instead of if do not gain soo much 
 (defn mk1a [[i l h] bdd]
   (cond
     (= l h) bdd
@@ -170,6 +168,7 @@
                [i l h]
                bdd)))))
 
+;; the simplest implementation use a map instead of a record
 
 (defn mk2 [[i l h] m]
   "The essence of building reduced BDDs.
@@ -234,7 +233,25 @@
                  high (:uid hbdd)]
              (mk1 [(v u2 bdd) low high] hbdd))))
 
+; we call it apply* instead of apply 
 (def apply* (memo app))
 
 
+
+
+;;; ######################################################## 
+;;; ###                 BASE FUNCTIONS                   ###
+;;; ########################################################
+
+(defn const [b]
+  "const takes 1 or 0 and returns the parameter"
+  {:pre [(s/valid? ::bspec/b b)]} b)
+
+;; TODO: var(i) = x_i
+
+(defn var* [i bdd]
+  (mk1 [i 0 1] bdd))
+;;; ######################################################## 
+;;; ###              ALGEBRAIC OPERATIONS                ###
+;;; ########################################################
 
