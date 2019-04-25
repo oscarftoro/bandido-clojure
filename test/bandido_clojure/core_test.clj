@@ -122,7 +122,7 @@
         bdd3 (mk1 [2 0 1] bdd2)
         bdd4 (mk1 [1 0 2] bdd3)
         bdd5 (mk1 [1 3 4] bdd4)
-        bdd6 (apply* :and 5 6 bdd5)
+        actual (apply* :and 5 6 bdd5)
         
         expected (map->Bdd {:t {0 [4 0 0]
                                 1 [4 1 1]
@@ -135,7 +135,7 @@
                                 8 [1 0 7]}
                             :uid 8
                             :luid 8})]
-    (is (= expected bdd6 ))))
+    (is (= expected actual ))))
 
 
 (use-fixtures :each setup )

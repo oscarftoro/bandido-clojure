@@ -25,7 +25,13 @@
 (defn- bdd-and [b c]
   (case b
     0 0
-    1 (bdd-or 0 c)))    
+    1 (bdd-or 0 c)))
+
+;; not used
+(defn- bdd-xor [b c]
+  (let [d (bdd-and b (bdd-not c))
+        e (bdd-and (bdd-not b) c)]
+    (bdd-or d e)))
 
 ;;; ######################################################## 
 ;;; ###                BDDs FUNCTIONS                    ###
@@ -196,7 +202,8 @@
   [op u1 u2]
   (case op
     :and (and* u1 u2)
-    :or  (or* u1 u2)))
+    :or  (or* u1 u2))
+    :xor (xor* u1 u2))
 
 (defn- memo [f]
   (let [mem (atom {})]
@@ -236,9 +243,6 @@
 ; we call it apply* instead of apply 
 (def apply* (memo app))
 
-
-
-
 ;;; ######################################################## 
 ;;; ###                 BASE FUNCTIONS                   ###
 ;;; ########################################################
@@ -251,7 +255,15 @@
 
 (defn var* [i bdd]
   (mk1 [i 0 1] bdd))
+  
 ;;; ######################################################## 
 ;;; ###              ALGEBRAIC OPERATIONS                ###
 ;;; ########################################################
+
+(defn conj [f g] (apply* :and f g))
+
+(defn disj [f g ] (apply* :or f g))
+
+(defn inc-disj [f g] (apply* :xor f g))
+
 
