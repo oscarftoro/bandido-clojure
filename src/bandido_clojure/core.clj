@@ -202,8 +202,8 @@
   [op u1 u2]
   (case op
     :and (and* u1 u2)
-    :or  (or* u1 u2))
-    :xor (xor* u1 u2))
+    :or  (or* u1 u2)
+    :xor (xor* u1 u2)))
 
 (defn- memo [f]
   (let [mem (atom {})]
