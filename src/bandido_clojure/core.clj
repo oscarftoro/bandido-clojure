@@ -1,13 +1,14 @@
 (ns bandido-clojure.core                
   (:require [clojure.set           :as set]
             [bandido-clojure.specs :as bspec]
-            [clojure.spec.alpha    :as s]))
+            [clojure.spec.alpha    :as s]
+            [clojure.core.match    :refer [match]]))
 
 
 
 
 ;;; ######################################################## 
-;;; ###            PRIMITIVES ON 0 and 1                 ###
+;;; ###            Primitives ON 0 and 1                 ###
 ;;; ########################################################
 
 (defn- bdd-not [b]
@@ -260,10 +261,34 @@
 ;;; ###              ALGEBRAIC OPERATIONS                ###
 ;;; ########################################################
 
-(defn conj [f g] (apply* :and f g))
+(defn and_ [f g] (apply* :and f g))
 
-(defn disj [f g ] (apply* :or f g))
+(defn or_ [f g ] (apply* :or f g))
 
-(defn inc-disj [f g] (apply* :xor f g))
+(defn xor_ [f g] (apply* :xor f g))
 
 
+;;; ######################################################## 
+;;; ###                 PLOT OPERATIONS                  ###
+;;; ########################################################
+
+
+(defn u-inf-dot->dot-line [u inf dot]
+  (match inf
+         [i 0 0] (str dot "graph { 1 [shape=box] 0 [shape=box] ")
+         [i 1 1] dot
+         [i l h] (let [labels
+                       (str dot
+                            (format " %d [label=<X<SUB>%d</SUB>>,shape=circle, xlabel=%d] " u i u))
+                       low (format " %d -- %d [style=dashed]" u l)
+                       hgh (format " %d -- %d " u h)]
+                   (str labels low hgh))))
+         
+
+(defn bdd->dot [bdd]
+  (let [arr (->
+             bdd
+             :t (->> (sort-by first <)))
+        beg (reduce (fn [dot [i inf :as el]]
+                      (u-inf-dot->dot-line i inf dot)) "" arr)]
+    (str beg  "}")))
