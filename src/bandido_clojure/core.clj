@@ -273,7 +273,7 @@
 ;;; ########################################################
 
 
-(defn u-inf-dot->dot-line [u inf dot]
+(defn- u-inf-dot->dot-line [u inf dot]
   (match inf
          [i 0 0] (str dot "graph { 1 [shape=box] 0 [shape=box] ")
          [i 1 1] dot
@@ -292,3 +292,10 @@
         beg (reduce (fn [dot [i inf :as el]]
                       (u-inf-dot->dot-line i inf dot)) "" arr)]
     (str beg  "}")))
+
+(defn bdd->file! [bdd]
+  (let [dot (bdd->dot bdd)
+        file-name "output/bddwai.dot"]
+    (clojure.java.io/make-parents file-name)
+    (spit file-name
+          dot)))
