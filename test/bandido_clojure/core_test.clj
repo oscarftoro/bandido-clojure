@@ -4,7 +4,8 @@
     [clojure.test.check :as tc]
     [clojure.test.check.generators :as gen]
     [clojure.test.check.properties :as prop]
-    [bandido-clojure.core :refer [init-table mk1 mk1a v low high apply* map->Bdd var*]]
+    [bandido-clojure.core :refer
+     [init-table mk1 mk1a v low high apply* map->Bdd var* and*]]
     [bandido-clojure.specs :as specs]
     [clojure.spec.test.alpha :as stest]))
 
@@ -155,13 +156,13 @@
     (is (= expected actual))))
 
 (deftest build-a-logical-formula
-  (testing "constructing variables (x_1 and x_2 and ~x_3) or (~x_1 and x_3) 
+  (testing "constructing variables (x_1 and x_2)
    should be a total blast")
   (let [bdd      (init-table 3)
         bdd1     (var* 1 bdd)
         bdd2     (var* 2 bdd1)
         bdd3     (var* 3 bdd2)
-        actual   (apply* :and (v 1 bdd3) (v 2 bdd3) bdd3)
+        actual   (and* (v 1 bdd3) (v 2 bdd3) bdd3)
 
         expected (map->Bdd {
                             :t    {0 [4 0 0]
@@ -172,6 +173,26 @@
                             :uid  4
                             :luid 4})]
     (is (= expected actual))))
+
+#_(deftest build-a-logical-formula
+    (testing "constructing variables (x_1 and x_2 and ~x_3) or (~x_1 and x_3)
+   should be a huge success")
+    (let [bdd      (init-table 3)
+          bdd1     (var* 1 bdd)
+          bdd2     (var* 2 bdd1)
+          bdd3     (var* 3 bdd2)
+          bdd4     (apply* :and (v 1 bdd3) (v 2 bdd3) bdd3)
+          bdd5     ()
+
+          expected (map->Bdd {
+                              :t    {0 [4 0 0]
+                                     1 [4 1 1]
+                                     2 [1 0 1]
+                                     3 [2 0 1]
+                                     4 [3 0 1]}
+                              :uid  4
+                              :luid 4})]
+      (is (= expected actual))))
 
 
 (use-fixtures :each setup)

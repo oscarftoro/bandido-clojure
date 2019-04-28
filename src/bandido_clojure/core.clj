@@ -8,7 +8,7 @@
 
 
 
-;;; ######################################################## 
+;;; ########################################################
 ;;; ###            Primitives ON 0 and 1                 ###
 ;;; ########################################################
 
@@ -35,43 +35,43 @@
         e (bdd-and (bdd-not b) c)]
     (bdd-or d e)))
 
-;;; ######################################################## 
-;;; ###                BDDs FUNCTIONS                    ###
+;;; ########################################################
+;;; ###                BDDs FUNCTIONS'                   ###
 ;;; ########################################################
 
-;;; naive implementation of ite
+;; naive implementation of ite
 (defn ite [f g h]
   "Three argument operation that stands for If-then-else.
    When f is true returns g otherwise h.
    f is true if f and g is true and false when f is false and h is true"
   (bdd-or (bdd-and f g) (bdd-and (bdd-not f) h)))
 
-(defn and* [f g]
+(defn and' [f g]
   (ite f g 0))
 
-(defn or* [f g]
+(defn or' [f g]
   (ite f 1 g))
 
-(defn xor* [f g]
+(defn xor' [f g]
   (ite f (bdd-not g) g))
 
-(defn nor* [f g]
+(defn nor' [f g]
   (ite f 0 (bdd-not g)))
 
-(defn xnor* [f g]
+(defn xnor' [f g]
   (ite f g (bdd-not g)))
 
-(defn not* [f]
+(defn not' [f]
   (ite f 0 1))
 
-(defn nand* [f g]
+(defn nand' [f g]
   (ite f g 1))
 
-(defn zero* [] 0)
+(defn zero' [] 0)
 
-(defn one* [] 1)
+(defn one' [] 1)
 
-;;; ######################################################## 
+;;; ########################################################
 ;;; ###                 CONFIGURATION                    ###
 ;;; ########################################################
 
@@ -203,9 +203,9 @@
 (defn- eval-op
   [op u1 u2]
   (case op
-    :and (and* u1 u2)
-    :or  (or* u1 u2)
-    :xor (xor* u1 u2)))
+    :and (and' u1 u2)
+    :or  (or' u1 u2)
+    :xor (xor' u1 u2)))
 
 (defn- memo [f]
   (let [mem (atom {})]
@@ -259,14 +259,14 @@
   (mk1 [i 0 1] bdd))
   
 ;;; ######################################################## 
-;;; ###              ALGEBRAIC OPERATIONS                ###
+;;; ###              ALGEBRAIC OPERATIONS*               ###
 ;;; ########################################################
 
-(defn and_ [f g] (apply* :and f g))
+(defn and* [f g bdd] (apply* :and f g bdd))
 
-(defn or_ [f g ] (apply* :or f g))
+(defn or* [f g bdd] (apply* :or f g bdd))
 
-(defn xor_ [f g] (apply* :xor f g))
+(defn xor* [f g bdd] (apply* :xor f g bdd))
 
 
 ;;; ######################################################## 
