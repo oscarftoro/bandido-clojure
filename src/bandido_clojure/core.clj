@@ -304,8 +304,6 @@
           dot)))
 
 (defn bdd->svg! [bdd]
-  (let [dot (shell/sh "which" "-a" "dot")
-        _ (prn "don dot: " dot)]
     (do
       (bdd->file! bdd)
-      (shell/sh "dot" "-Tsvg" "output/bdd.dot" "-o" "output/bdd.svg"))))
+      (shell/sh "dot" "-Tsvg" "output/bdd.dot" "-o" "output/bdd.svg")))
