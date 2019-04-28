@@ -39,7 +39,7 @@
 ;;; ###                BDDs FUNCTIONS'                   ###
 ;;; ########################################################
 
-;; naive implementation of ite
+;;; naive implementation of ite
 (defn ite [f g h]
   "Three argument operation that stands for If-then-else.
    When f is true returns g otherwise h.
@@ -52,7 +52,7 @@
 (defn or' [f g]
   (ite f 1 g))
 
-(defn xor' [f g]
+(defn xor [f g]
   (ite f (bdd-not g) g))
 
 (defn nor' [f g]
@@ -164,7 +164,7 @@
               :uid u
               :luid u}))))))
 
-;; mk using cond instead of if do not gain soo much 
+;;; mk using cond instead of if do not gain soo much
 (defn mk1a [[i l h] bdd]
   (cond
     (= l h) bdd
@@ -176,7 +176,7 @@
                [i l h]
                bdd)))))
 
-;; the simplest implementation use a map instead of a record
+;;; the simplest implementation use a map instead of a record
 
 (defn mk2 [[i l h] m]
   "The essence of building reduced BDDs.
@@ -286,7 +286,6 @@
                        low (format " %d -- %d [style=dashed]" u l)
                        hgh (format " %d -- %d " u h)]
                    (str labels low hgh))))
-         
 
 (defn bdd->dot [bdd]
   (let [arr (->
