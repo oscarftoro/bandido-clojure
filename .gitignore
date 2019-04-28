@@ -14,3 +14,5 @@ pom.xml.asc
 .\#*
 \#*\#
 src/bandido_clojure/\#*\#
+.idea
+output
