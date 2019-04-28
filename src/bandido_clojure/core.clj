@@ -52,7 +52,7 @@
 (defn or' [f g]
   (ite f 1 g))
 
-(defn xor [f g]
+(defn xor' [f g]
   (ite f (bdd-not g) g))
 
 (defn nor' [f g]
@@ -82,8 +82,9 @@
    The value `luid` is the largest uid variable in table `t`.
    The tuple (t,uid,luid) is represented in this implementation as a record.x1x1
    The variable `i` represents the index of a variable x_i,
-   for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
-   the low branch whereas `h`, the high branch. Both are integers of type uid.")
+   for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l`
+   represents the low branch whereas `h`, the high branch. Both are integers of
+   type uid.")
 
 (defrecord Bdd [t uid luid])
 
@@ -242,8 +243,8 @@
                  high (:uid hbdd)]
              (mk1 [(v u2 bdd) low high] hbdd))))
 
-; we call it apply* instead of apply 
-(def apply* (memo app))
+
+(def apply' (memo app))
 
 ;;; ######################################################## 
 ;;; ###                 BASE FUNCTIONS                   ###
@@ -262,11 +263,11 @@
 ;;; ###              ALGEBRAIC OPERATIONS*               ###
 ;;; ########################################################
 
-(defn and* [f g bdd] (apply* :and f g bdd))
+(defn and* [f g bdd] (apply' :and (v f bdd ) (v g bdd) bdd))
 
-(defn or* [f g bdd] (apply* :or f g bdd))
+(defn or* [f g bdd] (apply' :or f g bdd))
 
-(defn xor* [f g bdd] (apply* :xor f g bdd))
+(defn xor* [f g bdd] (apply' :xor f g bdd))
 
 
 ;;; ######################################################## 

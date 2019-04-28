@@ -5,7 +5,7 @@
     [clojure.test.check.generators :as gen]
     [clojure.test.check.properties :as prop]
     [bandido-clojure.core :refer
-     [init-table mk1 mk1a v low high apply* map->Bdd var* and*]]
+     [init-table mk1 mk1a v low high apply' map->Bdd var* and*]]
     [bandido-clojure.specs :as specs]
     [clojure.spec.test.alpha :as stest]))
 
@@ -123,7 +123,7 @@
         bdd3     (mk1 [2 0 1] bdd2)
         bdd4     (mk1 [1 0 2] bdd3)
         bdd5     (mk1 [1 3 4] bdd4)
-        actual   (apply* :and 5 6 bdd5)
+        actual   (apply' :and 5 6 bdd5)
 
         expected (map->Bdd {:t    {0 [4 0 0]
                                    1 [4 1 1]
@@ -162,7 +162,7 @@
         bdd1     (var* 1 bdd)
         bdd2     (var* 2 bdd1)
         bdd3     (var* 3 bdd2)
-        actual   (and* (v 1 bdd3) (v 2 bdd3) bdd3)
+        actual   (and* 1 2 bdd3)
 
         expected (map->Bdd {
                             :t    {0 [4 0 0]
@@ -181,7 +181,7 @@
           bdd1     (var* 1 bdd)
           bdd2     (var* 2 bdd1)
           bdd3     (var* 3 bdd2)
-          bdd4     (apply* :and (v 1 bdd3) (v 2 bdd3) bdd3)
+          bdd4     (and* 1 2 bdd3)
           bdd5     ()
 
           expected (map->Bdd {
