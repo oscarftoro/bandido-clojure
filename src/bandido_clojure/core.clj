@@ -265,9 +265,9 @@
 
 (defn and* [f g bdd] (apply' :and (v f bdd ) (v g bdd) bdd))
 
-(defn or* [f g bdd] (apply' :or f g bdd))
+(defn or* [f g bdd] (apply' :or (v f bdd ) (v g bdd) bdd))
 
-(defn xor* [f g bdd] (apply' :xor f g bdd))
+(defn xor* [f g bdd] (apply' :xor (v f bdd ) (v g bdd) bdd))
 
 
 ;;; ######################################################## 
