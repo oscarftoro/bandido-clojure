@@ -1,4 +1,3 @@
-
 (defproject bandido-clojure "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
@@ -6,9 +5,9 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/core.match "0.3.0"]]
-  :profiles { :dev {:dependencies [[org.clojure/test.check "0.9.0"]
-                                   [org.clojure/tools.nrepl "0.2.2"]
-                                   [cider/cider-nrepl "0.21.1"]]}}
+  :profiles { :dev {:dependencies [[org.clojure/test.check "0.9.0" :scope "test"]
+                                   [org.clojure/tools.nrepl "0.2.2" :scope "test"]
+                                   [cider/cider-nrepl "0.21.1" :exclusions [nrepl]]]}}
   :repl-options {:init-ns bandido-clojure.core
                  :nrepl-middleware
                  [cider.nrepl/wrap-apropos
