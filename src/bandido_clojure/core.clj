@@ -2,7 +2,8 @@
   (:require [clojure.set           :as set]
             [bandido-clojure.specs :as bspec]
             [clojure.spec.alpha    :as s]
-            [clojure.core.match    :refer [match]]))
+            [clojure.core.match    :refer [match]]
+            [clojure.java.shell    :as shell]))
 
 
 
@@ -79,7 +80,7 @@
    and `uid` is an integer that stands for unique id and represents the current 
    computed result. 
    The value `luid` is the largest uid variable in table `t`.
-   The tuple (t,uid,luid) is represented in this implementation as a record.
+   The tuple (t,uid,luid) is represented in this implementation as a record.x1x1
    The variable `i` represents the index of a variable x_i,
    for instance, variables are represented as x_1, x_2, x_3...x_n. Variable `l` represents 
    the low branch whereas `h`, the high branch. Both are integers of type uid.")
@@ -279,7 +280,9 @@
          [i 1 1] dot
          [i l h] (let [labels
                        (str dot
-                            (format " %d [label=<X<SUB>%d</SUB>>,shape=circle, xlabel=%d] " u i u))
+                            (format
+                             " %d [label=<X<SUB>%d</SUB>>,shape=circle, xlabel=%d] "
+                             u i u))
                        low (format " %d -- %d [style=dashed]" u l)
                        hgh (format " %d -- %d " u h)]
                    (str labels low hgh))))
@@ -295,7 +298,14 @@
 
 (defn bdd->file! [bdd]
   (let [dot (bdd->dot bdd)
-        file-name "output/bddwai.dot"]
+        file-name "output/bdd.dot"]
     (clojure.java.io/make-parents file-name)
     (spit file-name
           dot)))
+
+(defn bdd->svg! [bdd]
+  (let [dot (shell/sh "which" "-a" "dot")
+        _ (prn "don dot: " dot)]
+    (do
+      (bdd->file! bdd)
+      (shell/sh "dot" "-Tsvg" "output/bdd.dot" "-o" "output/bdd.svg"))))
