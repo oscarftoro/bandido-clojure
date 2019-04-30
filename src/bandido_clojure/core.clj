@@ -269,6 +269,15 @@
 
 (defn xor* [f g bdd] (apply' :xor (v f bdd ) (v g bdd) bdd))
 
+(defn not* [f bdd] (let [t    (->> bdd :t)
+                         nots (reduce-kv (fn [m k [i l h :as inf]]
+                                           (if (= i f)        
+                                             (assoc m k [i h l]) ;swap l h
+                                             (assoc m k inf)))   ;do nothing
+                                         {}
+                                         t)]
+                    (assoc bdd :t nots)))
+
 
 ;;; ######################################################## 
 ;;; ###                 PLOT OPERATIONS                  ###
