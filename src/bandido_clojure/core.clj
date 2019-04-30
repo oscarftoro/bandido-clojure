@@ -270,7 +270,7 @@
 (defn xor* [f g bdd] (apply' :xor (v f bdd ) (v g bdd) bdd))
 
 (defn not* [f bdd] (let [t    (->> bdd :t)
-                         nots (reduce-kv (fn [m k [i l h :as inf]]
+                         nots (reduce-kv (fn [m k [i l h :as inf]] ; build a new t with all var i negated
                                            (if (= i f)        
                                              (assoc m k [i h l]) ;swap l h
                                              (assoc m k inf)))   ;do nothing
