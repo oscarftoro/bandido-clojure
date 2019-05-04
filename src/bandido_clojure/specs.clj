@@ -46,11 +46,11 @@
                :u     ::uid)
   :ret  ::bdd)
 
-(s/def ::init-t (s/coll-of ::h :kind map? :count? 3 ))
+(s/def ::init-t (s/coll-of ::h :kind map? :count? 3))
 
 (s/fdef ::bdd->ht
   :args (:pr ::bdd)
-  :ret ::h )
+  :ret ::h)
 
 (s/fdef ::mk1
   :args (s/cat :ite ::ite :pr ::->Bdd)
