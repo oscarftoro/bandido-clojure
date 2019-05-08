@@ -299,7 +299,7 @@
 (defn xor* [f g bdd] (apply' :xor f g bdd))
 
 (defn not*
-  "not takes a variable id "
+  "not takes a variable id and negates all those variables"
   [f bdd] (let [t    (->> bdd :t)
                 nots (reduce-kv (fn [m k [i l h :as inf]]   ; build a new t with all var i negated
                                   (if (= i f)
@@ -309,6 +309,12 @@
                                 t)]
             (assoc bdd :t nots)))
 
+(defn not**
+  "takes a uid and negate its inf"
+  [u bdd] (let [inf    (-> bdd :t (get u))
+                [i l h] inf
+                new-t   (assoc (:t bdd) u [i h l])]
+                      (assoc bdd :t new-t)))
 
 ;;; ######################################################## 
 ;;; ###                 PLOT OPERATIONS                  ###
