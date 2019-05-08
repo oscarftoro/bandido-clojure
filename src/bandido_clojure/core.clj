@@ -112,8 +112,8 @@
 
 (defn init-table2 [var-num]
   "Initialise a table that works with maps instead of records"
-  {:t   {0 [(inc var-num) 0 0] 1 [(inc var-num) 1 1]}
-   :uid 1
+  {:t    {0 [(inc var-num) 0 0] 1 [(inc var-num) 1 1]}
+   :uid  1
    :luid 1
    :vars {}})
 
@@ -144,13 +144,24 @@
        :uid uid})))
 
 
-(defn- update-uid [value bdd]                           ; same here
+(defn- update-uid [value bdd]                               ; same here
   "returns an updated Bdd containing a new :uid "
   (assoc bdd :uid value))
 
 ;;; ######################################################## 
 ;;; ###                 MAKE ALGORITHM                   ###
 ;;; ########################################################
+
+(defn compute-vars [id t]
+  "define the node :uid that corresponds to variable i.
+   We assume that the first variable with highest uid is the
+   correct one"
+  (let [uid-inf-vec (->> (into hash-set)
+                         t
+                         (reverse)
+                         (some (fn [[u [i l h]]] (if (= i  id) [u [i l h]]))))
+        [uid _] uid-inf-vec]
+    {id uid}))
 
 (defn mk1 [[i l h] bdd]
   "The core of building reduced BDDs.
@@ -159,13 +170,16 @@
   (if (= l h) bdd
               (let [ht (bdd->ht bdd)]
                 (if (contains? ht [i l h])
-                  (assoc bdd :uid (ht [i l h]))             ; returns the saved value in h
+                  (assoc bdd :uid (ht [i l h]))   ; returns the saved value in h
                   (let [u  (-> bdd (:luid) (inc))
-                        t1 (conj (:t bdd) [u [i l h]])]
+                        t1 (conj (:t bdd) [u [i l h]])
+                        ovars (:vars bdd)
+                        vars (merge ovars {i u})] ; this is our hack to mk
                     (map->Bdd
                       {:t    t1
                        :uid  u
-                       :luid u}))))))
+                       :luid u
+                       :vars vars}))))))
 
 ;;; mk using cond instead of if do not gain soo much
 (defn mk1a [[i l h] bdd]
@@ -215,8 +229,8 @@
     (fn [& args]
 
       (if-let [e (find @mem [(nth args 1) (nth args 2)])]
-        (->> (args 3)
-             (update-uid (val e)))        ; (val e) is the uid saved in g
+        (->> (nth args 3)
+             (update-uid (val e)))                          ; (val e) is the uid saved in g
         (let [bdd (apply f args)
               uid (:uid bdd)
               u1  (nth args 1)
@@ -260,13 +274,25 @@
 ;; TODO: var(i) = x_i
 
 (defn var* [i bdd]
-  (mk1 [i 0 1] bdd))
+  (let [result-bdd (mk1 [i 0 1] bdd)
+        uid        (:uid result-bdd)
+        vars       (:vars result-bdd)]
+    (assoc result-bdd :vars (merge vars {i uid}))))
+
+
 
 ;;; ######################################################## 
 ;;; ###              ALGEBRAIC OPERATIONS*               ###
 ;;; ########################################################
 
-(defn and* [f g bdd] (apply' :and f g bdd))
+(defn and*
+  "takes variable numbers as inputs"
+  [f g bdd] (let [vars        (:vars bdd)
+                  u1 (get vars f)
+                  u2 (get vars g)] (apply' :and u1 u2 bdd)))
+
+(defn and** "takes uids as inputs"
+  [f g bdd] (apply' :and f g bdd))
 
 (defn or* [f g bdd] (apply' :or f g bdd))
 
@@ -275,10 +301,10 @@
 (defn not*
   "not takes a variable id "
   [f bdd] (let [t    (->> bdd :t)
-                nots (reduce-kv (fn [m k [i l h :as inf]] ; build a new t with all var i negated
+                nots (reduce-kv (fn [m k [i l h :as inf]]   ; build a new t with all var i negated
                                   (if (= i f)
-                                    (assoc m k [i h l]) ;swap l h
-                                    (assoc m k inf))) ;do nothing
+                                    (assoc m k [i h l])     ;swap l h
+                                    (assoc m k inf)))       ;do nothing
                                 {}
                                 t)]
             (assoc bdd :t nots)))

@@ -5,7 +5,7 @@
     [clojure.test.check.generators :as gen]
     [clojure.test.check.properties :as prop]
     [bandido-clojure.core :refer
-     [init-table mk1 mk1a v low high apply' map->Bdd var* and* not*]]
+     [init-table mk1 mk1a v low high apply' map->Bdd var* and* and** not*]]
     [bandido-clojure.specs :as specs]
     [clojure.spec.test.alpha :as stest]))
 
@@ -135,11 +135,14 @@
                                    7 [2 0 2]
                                    8 [1 0 7]}
                             :uid  8
-                            :luid 8})]
+                            :luid 8
+                            :vars {3 2
+                                   2 7
+                                   1 8}})]
     (is (= expected actual))))
 
 (deftest build-variables
-  (testing "constructing variables x_1, x_2 and ~x_3 should be a blast")
+  (testing "constructing variables x_1, x_2 and x_3 should be a blast in t table")
   (let [bdd      (init-table 3)
         bdd1     (var* 1 bdd)
         bdd2     (var* 2 bdd1)
@@ -152,19 +155,22 @@
                                    3 [2 0 1]
                                    4 [3 0 1]}
                             :uid  4
-                            :luid 4})]
+                            :luid 4
+                            :vars {1 2
+                                   2 3
+                                   3 4}})]
     (is (= expected actual))))
 
-(deftest build-a-logical-formula
+
+
+(deftest build-a-logical-formula-and
   (testing "constructing variables (x_1 and x_2)
    should be a total blast")
   (let [bdd      (init-table 3)
         bdd1     (var* 1 bdd)
         bdd2     (var* 2 bdd1)
         bdd3     (var* 3 bdd2)
-        u1       (:uid bdd1)
-        u2       (:uid bdd2)
-        actual   (and* u1 u2 bdd3)
+        actual   (and* 1 2 bdd3)
 
         expected (map->Bdd {:t    {0 [4 0 0]
                                    1 [4 1 1]
@@ -173,34 +179,39 @@
                                    4 [3 0 1]
                                    5 [1 0 3]}
                             :uid  5
-                            :luid 5})]
+                            :luid 5
+                            :vars {3 4
+                                   2 3
+                                   1 5}})]
     (is (= expected actual))))
 
-(deftest build-a-logical-formula
+
+(deftest build-a-logical-formula-and-neg
   (testing "constructing variables (x_1 and x_2 and ~x_3)
   should be a huge success")
-  (let [bdd    (init-table 3)
-        bdd1   (var* 1 bdd)
-        u1     (:uid bdd1)
-        bdd2   (var* 2 bdd1)
-        u2     (:uid bdd2)
-        bdd3   (var* 3 bdd2)
-        u3     (:uid bdd3)
-        bdd4   (and* u1 u2 bdd3)
-        u4     (:uid bdd4)
-        bdd5   (not* 3 bdd4)
-        actual (and* u4 u3 bdd5)
+  (let [bdd      (init-table 3)
+        bdd1     (var* 1 bdd)
+        bdd2     (var* 2 bdd1)
+        bdd3     (var* 3 bdd2)
+        bdd4     (and* 1 2 bdd3)
+        u4       (:uid bdd4)
+        bdd5     (not* 3 bdd4)
+        u3       (:uid bdd3)
+        actual   (and** u4 u3 bdd5)
 
-        expected (map->Bdd {:t    {0 [4 0 0]
-                                   1 [4 1 1]
-                                   2 [1 0 1]
-                                   3 [2 0 1]
-                                   4 [3 1 0]
-                                   5 [1 0 3]
-                                   6 [2 0 4]
-                                   7 [1 0 6]}
-                            :uid  7
-                            :luid 7})]
+        expected (map->Bdd {:t {0 [4 0 0]
+                                1 [4 1 1]
+                                2 [1 0 1]
+                                3 [2 0 1]
+                                4 [3 1 0]
+                                5 [1 0 3]
+                                6 [2 0 4]
+                                7 [1 0 6]}
+                            :uid 7
+                            :luid 7
+                            :vars {1 7
+                                   2 6
+                                   3 4}})]
     (is (= expected actual))))
 
 
