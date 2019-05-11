@@ -152,16 +152,6 @@
 ;;; ###                 MAKE ALGORITHM                   ###
 ;;; ########################################################
 
-(defn compute-vars [id t]
-  "define the node :uid that corresponds to variable i.
-   We assume that the first variable with highest uid is the
-   correct one"
-  (let [uid-inf-vec (->> (into hash-set)
-                         t
-                         (reverse)
-                         (some (fn [[u [i l h]]] (if (= i  id) [u [i l h]]))))
-        [uid _] uid-inf-vec]
-    {id uid}))
 
 (defn mk1 [[i l h] bdd]
   "The core of building reduced BDDs.
@@ -284,6 +274,18 @@
 ;;; ######################################################## 
 ;;; ###              ALGEBRAIC OPERATIONS*               ###
 ;;; ########################################################
+
+(defn id-t->uid [id t]
+  "define the node :uid that corresponds to variable i.
+   We assume that the first variable with highest uid is the
+   correct one"
+  (let [uid-inf-vec (->> t
+                         (apply (into hash-set))
+                         reverse
+                         (some (fn [[u [i l h]]] (if (= i  id) [u [i l h]]))))
+        [uid _] uid-inf-vec]
+    uid))
+
 
 (defn and*
   "takes variable numbers as inputs"
