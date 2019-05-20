@@ -202,7 +202,51 @@
 ;;; a mk3 could be implemented using the map metadata of the object to
 ;;; store var-num, this will require an init-table3 that uses with-meta 
 
-;;; ######################################################## 
+;;; ########################################################
+;;; ###                BUILD ALGORITHM                   ###
+;;; ########################################################
+
+;; potential design of an internal dsl for propositional logic
+;; (p y q) entonces ((no r) o q)
+;; (:and p q) :then ((:not r) :or q)
+;; (:then (:and p q) ((:not r) :or q)
+;; [:then [:and p q] [:or (:not r) q]]
+;;
+
+(def ops
+  {'and and'
+   'or or'
+   'not not'})
+
+(defmulti eval
+          (fn [form] (:op form)))
+
+(defmethod eval 'and
+  [{:keys [op expr]}]
+  (apply (ops op) (map eval expr)))
+
+(defmethod eval 'not
+  [])
+
+(defn eval [t]
+  "evaluates a logical formula t"
+  true)
+(defn expand
+  "should return a  expanded t expression with variable x = b"
+  [t x b] true) ;
+
+(defn build' [t i n bdd]
+  (if (> i n)
+    (if (eval t) 1 0)
+    (let [v0 'build0
+          v1 'build1]
+      (mk1 (i,v0,v1) bdd))))
+
+(defn build [t n]
+  (let [bdd init-table n]
+    (build' t 1 n bdd)))
+
+;;; ########################################################
 ;;; ###                APPLY ALGORITHM                   ###
 ;;; ########################################################
 
@@ -275,10 +319,9 @@
 ;;; ###              ALGEBRAIC OPERATIONS*               ###
 ;;; ########################################################
 
-(defn id-t->uid [id t]
-  "define the node :uid that corresponds to variable i.
-   We assume that the first variable with highest uid is the
-   correct one"
+(defn id-t->max-uid [id t]
+  "Given an id and a t table it returns the largest uid value corresponding to
+   the variable id"
   (let [uid-inf-vec (->> t
                          (apply (into hash-set))
                          reverse
@@ -300,6 +343,11 @@
 
 (defn xor* [f g bdd] (apply' :xor f g bdd))
 
+;; i think the semantics of not are wrong here.
+;; when a search finds one value of i we should take that inf value
+;; invert the hi and lo branches and return the u
+;; if a not is already defined we should return the u corresponding
+;; to the not
 (defn not*
   "not takes a variable id and negates all those variables"
   [f bdd] (let [t    (->> bdd :t)
@@ -316,7 +364,17 @@
   [u bdd] (let [inf    (-> bdd :t (get u))
                 [i l h] inf
                 new-t   (assoc (:t bdd) u [i h l])]
-                      (assoc bdd :t new-t)))
+            (assoc bdd :t new-t)))
+(defn not2
+  "takes an f and a bdd, finds the value inf = [i h l] s.t. i = f
+   and make a new row not-inf= [i l h] in the t table. returns the
+   updated bdd"
+  [f bdd]
+
+  (let [t (->> bdd :t)] t))
+  
+
+
 
 ;;; ######################################################## 
 ;;; ###                 PLOT OPERATIONS                  ###

@@ -194,7 +194,6 @@
         bdd2     (var* 2 bdd1)
         bdd3     (var* 3 bdd2)
         bdd4     (and* 1 2 bdd3)
-        u4       (:uid bdd4)
         bdd5     (not* 3 bdd4)
         u3       (:uid bdd3)
         actual   (and** u4 u3 bdd5)
