@@ -214,9 +214,9 @@
 ;;
 
 (def ops
-  {'and and'
-   'or or'
-   'not not'})
+  {:and [(and) :twoargs]
+   :or  [(or)  :twoargs]
+   :not [(partial not) :onearg]})
 
 (defmulti eval
           (fn [form] (:op form)))
