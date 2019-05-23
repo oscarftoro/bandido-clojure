@@ -218,17 +218,17 @@
    :or  [(or)  :twoargs]
    :not [(partial not) :onearg]})
 
-(defmulti eval
+(defmulti eval*
           (fn [form] (:op form)))
 
-(defmethod eval 'and
+(defmethod eval* 'and
   [{:keys [op expr]}]
   (apply (ops op) (map eval expr)))
 
-(defmethod eval 'not
+(defmethod eval* 'not
   [])
 
-(defn eval [t]
+(defn eval* [t]
   "evaluates a logical formula t"
   true)
 (defn expand
@@ -243,7 +243,7 @@
       (mk1 (i,v0,v1) bdd))))
 
 (defn build [t n]
-  (let [bdd init-table n]
+  (let [bdd (init-table n)]
     (build' t 1 n bdd)))
 
 ;;; ########################################################
